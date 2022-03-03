@@ -7,10 +7,15 @@
 --]]
 
 SecureAccess = {
-    LicenseToken = 'โทเคนที่ซื้อมา',
+
+    LicenseToken = 'TOKEN_SESSION_HERE',
+
     DiscordAPI = {
         ResourceStatus = 'ลิงค์WebhookของDiscord' ,
         UntrustedCall = 'ลิงค์WebhookของDiscord'  ,
     },
-    FrameworkEventName = 'esx:getSharedObject'
+
+    FrameworkEventName = 'esx:getSharedObject',
+    
+    DebugTestSerialCode = true
 }

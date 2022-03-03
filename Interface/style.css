@@ -2,6 +2,17 @@
 * {
     font-family: 'Sarabun', sans-serif;
     color: aliceblue;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+    supported by Chrome, Edge, Opera and Firefox */
+}
+
+body{
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .window {
@@ -16,6 +27,41 @@
     -moz-animation: fadeIn 1.3s;
     -o-animation: fadeIn 1.3s;
     -ms-animation: fadeIn 1.3s;
+}
+
+#text-close-instruct{
+    color: rgba(255, 255, 255, 0.5);
+}
+#serial-submit{
+    text-shadow: 1px 1px 2px black;
+    font-size: 15px;
+    font-weight: bold;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 3px;
+    margin-right: 20px;
+    height: 30px;
+    background: rgba(172, 255, 47, 0.6);
+    border: 0;
+    border-radius: 100px;
+    transform: scale(100%);
+    opacity: 1;
+    transition: .1s;
+}
+#serial-submit:active{
+    outline: 0;
+    border: 0;
+}
+
+.info-and-button{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    padding-left: 20px;
+    font-size: 14px;
+    width: 750px;
+    height: 50px;
+    margin-top: 20px;
 }
 
 #capital-img {
@@ -33,7 +79,12 @@
     height: 45px;
 }
 
-#serial {
+#notify-text{
+    text-shadow: 0.2px 0.4px 2px black;
+    font-size: 25px;
+}
+
+#serial-code {
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
     margin-top: 18px;
@@ -50,9 +101,15 @@
     transition: .3s;
 }
 
-#serial:hover {
+#serial-code:hover {
+    transform: scale(103%);
     opacity: .9;
-    transition: .4s;
+    transition: .3s;
+}
+
+#serial-submit:hover {
+    opacity: .7;
+    transition: .3s;
 }
 
 @keyframes fadeIn {

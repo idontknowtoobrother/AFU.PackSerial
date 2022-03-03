@@ -6,25 +6,26 @@
 
 --]]
 
-fx_version 'celerean'
+fx_version 'cerulean'
 game 'gta5'
 
-client_script {
-    'Secure.lua',
-    'Client.lua'
+client_scripts {
+    'Settings.lua',
+    'Client/Source.lua'
 }
 
-server_script {
+server_scripts {
     '@mysql-async/lib/MySQL.lua',
-    'Server.lua'
+    'Secure.lua',
+    'Server/Source.lua'
 }
 
 ui_page 'Interface/ui.html'
 
 files {
-    'Interface/control.js',
-    'Interface/style.css',
-    'Interface/ui.html',
+    'Interface/*.js',
+    'Interface/*.css',
+    'Interface/*.html',
     'Interface/*.png',
     'Interface/*.gif',
     'Interface/*.jpg'

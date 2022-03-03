@@ -4,17 +4,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
-    <script src="./jquery.js"></script>
     <script src="./control.js" defer></script>
 </head>
 
 <body>
     <div class="window">
-        <img id="capital-img" src="./logo_server.gif" alt="logo_server">
+        <img id="capital-img" src="./logo_server.png" alt="logo_server">
         <div id="capital-label">AFU Capital ( Serial Pack )</div>
         <div class="field-serieal">
-            <input type="text" id="serial" placeholder="กรุณากรอก Serial Pack Key ตรงนี้ ...">
+            <input type="text" id="serial-code" placeholder="กรุณากรอก Serial Pack Key ตรงนี้ ...">
         </div>
+        <div class="info-and-button">
+            <div id="text-close-instruct">กด "Esc" เพื่อปิด</div>
+            <button id="serial-submit" onclick="activeSerial()">ยืนยัน Serial Code</button>
+        </div>
+        <div id="notify-text"></div>
     </div>
 </body>
 

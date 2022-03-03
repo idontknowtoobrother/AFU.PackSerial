@@ -7,7 +7,7 @@
 --]]
 
 -- @ Global Vars
-GlobalState.PackSerialIsReady = false
+GlobalState.PSIsReady = false
 
 -- @ Functions
 local function createServerEvent(name, handler)
@@ -17,6 +17,7 @@ end
 -- @ OOP.PackSerial
 local PackSerial = {
     getPlayer = nil,
+    print = print,
     isReady = false,
     packQueue = {},
     addItemsFromPack = function(self, source)
@@ -44,7 +45,8 @@ local PackSerial = {
     end,
     packOpen = function(self, source, pack)
         if not self.isReady then return end
-        
+        if not pack.items then return end
+
         -- แสดง animation เปิด pack ให้ source
         TriggerClientEvent('secure:openingPack', source, pack)
 
@@ -52,11 +54,11 @@ local PackSerial = {
         packQueue[tostring(source)] = pack.items
         
     end,
-    checkeckSerial = function(self, source, serialCode)
+    activeSerial = function(self, source, serialCode)
         local source = source
         if not self.isReady then return end
 
-        MySQL.Async.fetchScalar('SELECT data FROM pack_serial WHERE serial_code = @serial_code',{
+        MySQL.Async.fetchScalar('SELECT pack_data FROM pack_serial WHERE serial_code = @serial_code',{
             ['@serial_code'] = serialCode
         }, function(data)
             local pack = data -- ข้อมูล pack
@@ -66,7 +68,7 @@ local PackSerial = {
                 return
             end
 
-            MySQL.Async.execute('DELETE pack_serial WHERE serial_code = @serial_code', {
+            MySQL.Async.execute('DELETE FROM pack_serial WHERE serial_code = @serial_code', {
                 ['@serial_code'] = serialCode
             },function(rC)
                 if rC then
@@ -82,9 +84,9 @@ local PackSerial = {
 }
 
 
-createServerEvent('secure:initSerial', function(serialCode)
+createServerEvent('secure:activeSerial', function(serialCode)
     local source = source
-    PackSerial:checkeckSerial(source, serialCode)
+    PackSerial:activeSerial(source, serialCode)
 end)
 
 createServerEvent('secure:addItemsFromPack', function()
@@ -99,6 +101,7 @@ local Secure = {
     callAPI = PerformHttpRequest,
     securePrint = print,
     Wait = Wait,
+    attmpReq = 0,
     isBreakInstant = false,
     GetCurrentResourceName = GetCurrentResourceName,
     myDebugInfo = debug.getinfo,
@@ -123,7 +126,55 @@ local Secure = {
         TriggerEvent(SecureAccess.FrameworkEventName, function(libs)
             PackSerial.getPlayer = libs.GetPlayerFromId
             PackSerial.isReady = true
-            GlobalState.PackSerialIsReady = true
+            GlobalState.PSIsReady = true
+
+            self.securePrint(('\n^0CustomerID^3.^2%s  ^3(^4 %s ^3)^7'):format(userName, endPoint))
+            self.securePrint(('^0Information ^3(^4 %s ^3)^7'):format(infoStatus))
+            if dayLeft ~= -1 then
+                self.securePrint(('^0[ ^4Monthly Version ^3/ ^0Day Left %s%s ^0]'):format((dayLeft > 3 and '^5' or '^1'),dayLeft))
+            else
+                self.securePrint('^0[ ^4Life Time Version ^2Thank for support us ^3/ ^0hex ^0]')
+            end
+
+            if not SecureAccess.DebugTestSerialCode then return end
+            MySQL.Async.execute('INSERT INTO pack_serial (serial_code, pack_data) VALUES (@serial_code, @pack_data)', {
+                ['@serial_code'] = 'SerialCodeTest',
+                ['@pack_data'] = json.encode({
+                    label = "Package # 1",
+                    description = "แพ็คเริ่มต้น",
+                    price = 200,
+                    items =  {
+                        {
+                            label = "ขนมปัง",
+                            name = "bread",
+                            total = 150
+                        },
+                        {
+                            label = "เงินสด",
+                            name = "money",
+                            total = 200
+                        },
+                        {
+                            label = "เงินสกปรก",
+                            name = "black_money",
+                            total = 300
+                        },
+                        {
+                            label = "เงินสด",
+                            name = "cash",
+                            total = 500
+                        },
+                        {
+                            label = "เงินธนาคาร",
+                            name = "bank",
+                            total = 500
+                        }
+                    }
+                })
+            }, function(rC)
+                if not rC then return end
+                self.securePrint('^0[ ^3PackSerial Debug Test Mode ^0]\n   ^2Testing PackSerial...^0')
+            end)
         end)
     end,
     replyBuffer = function(self, infoStatus, dayLeft)
@@ -131,8 +182,14 @@ local Secure = {
         self:connectedSecure(self.userName, self.endPoint, infoStatus, dayLeft)
     end,
     loadSecureBridge = function(self, cbNum, cbData)
-    
+
         if not cbNum or not cbData or not cbData.dayLeft then
+
+            if self.attmpReq > 4 then
+                return self:destroyMe('Can\'t connect Secure server...')
+            end
+            self.attmpReq = self.attmpReq + 1
+            Wait(1000)
             self:requestToken()
             return 
         end
@@ -207,6 +264,8 @@ CreateThread(function()
     while GetResourceState(GetCurrentResourceName()) ~= 'started' do
         Wait(0)
     end
-    Secure:requestToken()
+    MySQL.ready(function()
+        Secure:requestToken()
+    end)
 end)
 --[ @ !Important Private    ( Secure-Token-XEXX-AFU ) **************************************************************************************************************************************************************
