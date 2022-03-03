@@ -27,7 +27,7 @@ const animateItems = (pack)=> {
     console.log(pack)
     
     // end
-    fetch(`https://${GetParentResourceName()}/ActivedSerialCode`, {
+    fetch(`https://AFU.PackSerial/ActivedSerialCode`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8'
@@ -46,7 +46,7 @@ const activeSerial = ()=> {
         return 
     }
 
-    fetch(`https://${GetParentResourceName()}/ActiveSerialCode`, {
+    fetch(`https://AFU.PackSerial/ActiveSerialCode`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8'
@@ -67,7 +67,7 @@ document.addEventListener('keydown', function(e) {
     if(e.code != 'Escape' || !isOnWindow)return;
     this.body.style.display = 'none'
 
-    fetch(`https://${GetParentResourceName()}/CloseWindow`, {
+    fetch(`https://AFU.PackSerial/CloseWindow`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
