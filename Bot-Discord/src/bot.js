@@ -52,6 +52,57 @@ calculatePrice = (values) => {
     }
     return total
 }
+generateSerialCode = () => {
+    let token = `${config.serialCodeTag}-`;
+    let length = 28-token.length
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
+    for (let i = 0; i < length; i += 1) {
+        token += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return token;
+}
+getPacks = (values) => {
+    var packs = []
+    for(let i = 0; i < values.length; i++){
+        const pack = config.package[parseInt(values[i])]
+        packs.push(pack)
+    }
+    return packs
+}
+initInformationBuy = (userId, values) => {
+    var embeds = [
+        {
+            title: `Bill @ รายการซื้อ`,
+            color: "32a854",
+            image: {
+                url: config.logo_server
+            },
+            fields: [
+                {
+                    name: `รายละเอียด`,
+                    value: `<@${userId}> \nโอนเงินตามช่องทางในภาพและรอการยืนยันฮะ\n`
+                }
+            ] 
+        }
+    ]
+    
+    var total = 0
+    for(let i = 0; i < values.length; i++){
+        const pack = config.package[values[i]]
+        total += pack.price
+        embeds[0].fields.push({
+            name: `${pack.label} @ ${pack.price}`,
+            value: `- ${pack.description}`
+        })
+    }
+    embeds[0].fields.push({
+        name: `**ราคารวมทั้งสิ้น**`,
+        value: `**\` ${total} บาท \`**`
+    })
+    console.log(embeds)
+    return embeds
+    
+}
 initIdentityInteraction = (userId, values) => {
     var strIden = `conf-${userId}-`
     for(let i = 0; i < values.length; i++){
@@ -107,6 +158,7 @@ sendPackInteraction = (channel) => {
     channel.send({ 
         embeds: [
             {
+                title: config.server_name,
                 color: "32a854",
                 thumbnail: {
                     url: config.logo_server
@@ -127,26 +179,49 @@ bot.on('interactionCreate', (interaction) => {
     if(interaction.customId == 'packs-select'){
         var userId = interaction.user.id
         var userPackValues = interaction.values
-        
         var userIdentityInteraction = initIdentityInteraction(userId, userPackValues)
         console.log(userIdentityInteraction.split('-'))
         
-        // const infomationBuy = initInformationBuy(userPackValues)
+        const infomationBuy = initInformationBuy(userId, userPackValues)
         const w8transAndConfirm = new MessageActionRow()
         .addComponents(
             new MessageButton()
                 .setCustomId(userIdentityInteraction)
-                .setEmoji('908985605701111818')
+                .setEmoji(config.server_emoji)
                 .setLabel('กรุณารอ..')
-                .setStyle('SECONDARY')
+                .setStyle('SUCCESS')
         )
             
         interaction.message.delete()
         interaction.channel.send({
-            // embeds:[infomationBuy],
+            embeds: infomationBuy,
             components: [w8transAndConfirm]
         })
+        return
+    }
+
+    // conf-
+    if(interaction.customId.includes('conf-')){
         
+        if(!isUserIdAllowToAccept(interaction.user.id)){
+            interaction.reply("**กรุณารอยืนยันสักครู่ฮะ**")
+                .then(() => {
+                    setTimeout(() => {
+                        interaction.deleteReply()
+                    }, 3000)
+                })
+                .catch(console.error)
+            return
+        }
+
+        var subIden = interaction.customId.substring(5, interaction.customId.length)    
+        var packDetail = subIden.split('-')
+        var packBuyer = {
+            serial_code: generateSerialCode(),
+            packs: getPacks(packDetail[1].split(','))
+        }
+        
+        console.log(packBuyer)
         return
     }
 
