@@ -1,0 +1,62 @@
+{
+    "devMode": true,
+    "afu_token": "TOKEN_SESSION_HERE",
+    "bot_token": "OTQ5MDMzNTQzODkwMjQzNjM1.YiEeXQ.emBXqALlEjd_e-LEOy9-Hex9W-Q",
+    "categoryIdFocus": "949034143415677028",
+    "allowAcceptUserId": [
+        "682988574211178525",
+        ""
+    ],
+    "logo_server": "https://media.discordapp.net/attachments/908983717379334154/937541112778874940/SECURE200x200.png",
+    "package": [{
+        "label": "Starter Pack ( แพ็คเริ่มต้น )",
+        "description": "สำหรับมือใหม่ที่พึ่งเข้าเซิฟมาและอยากฟาร์มไว",
+        "price": 400,
+        "items": [{
+            "label": "ขนมปัง",
+            "name": "bread",
+            "total": 15
+        }, {
+            "label": "เงินสด",
+            "name": "money",
+            "total": 100
+        }, {
+            "label": "เงินสด",
+            "name": "cash",
+            "total": 200
+        }, {
+            "label": "เงินสกปรก",
+            "name": "black_money",
+            "total": 200
+        }, {
+            "label": "เงินธนาคาร",
+            "name": "bank",
+            "total": 150
+        }]
+    }, {
+        "label": "Starter Pack 2 ( แพ็คเริ่มต้น 2 )",
+        "description": "สำหรับมือใหม่ที่พึ่งเข้าเซิฟมาและอยากฟาร์มไว",
+        "price": 300,
+        "items": [{
+            "label": "ขนมปัง",
+            "name": "bread",
+            "total": 200
+        }, {
+            "label": "เงินสด",
+            "name": "money",
+            "total": 300
+        }, {
+            "label": "เงินสด",
+            "name": "cash",
+            "total": 300
+        }, {
+            "label": "เงินสกปรก",
+            "name": "black_money",
+            "total": 100
+        }, {
+            "label": "เงินธนาคาร",
+            "name": "bank",
+            "total": 500
+        }]
+    }]
+}
