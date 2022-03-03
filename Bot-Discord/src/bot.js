@@ -28,6 +28,8 @@ _afuIntel.requestBotAccess()
 
 const { Client, Intents, MessageActionRow, MessageEmbed, MessageSelectMenu, MessageButton } = require('discord.js')
 const mysql = require('mysql');
+const bridge = mysql.createPool(config.server_database);
+
 
 // Bot Init
 const bot = new Client({
@@ -69,33 +71,55 @@ getPacks = (values) => {
     }
     return packs
 }
+initSerialSendInformation = (packBuyer) => {
+    var embeds = {
+        color: "32a854",
+        image: {
+            url: config.logo_server
+        },
+        fields: [
+            {
+                name: `ขอบคุณที่สนับสนุน ${config.server_name}`,
+                value: `User: <@${packBuyer.id}>\nSerial Code: ||${packBuyer.serial_code}||\n\nของที่จะได้รับจาก Serial Code นี้`
+            }
+        ] 
+    }
+
+    for(let i = 0; i < packBuyer.packs.length; i++){
+        const pack = packBuyer.packs[i]
+        embeds.fields.push({
+            name: `${pack.label} @ ${pack.price} บาท`,
+            value: `- ${pack.description}`
+        })
+    }
+    return embeds
+
+}
 initInformationBuy = (userId, values) => {
-    var embeds = [
-        {
-            title: `Bill @ รายการซื้อ`,
-            color: "32a854",
-            image: {
-                url: config.logo_server
-            },
-            fields: [
-                {
-                    name: `รายละเอียด`,
-                    value: `<@${userId}> \nโอนเงินตามช่องทางในภาพและรอการยืนยันฮะ\n`
-                }
-            ] 
-        }
-    ]
-    
+    var embeds = { 
+        title: `Bill @ รายการซื้อ`,
+        color: "32a854",
+        image: {
+            url: config.logo_server
+        },
+        fields: [
+            {
+                name: `รายละเอียด`,
+                value: `<@${userId}> \nโอนเงินตามช่องทางในภาพและรอการยืนยันฮะ\n`
+            }
+        ] 
+    }
+
     var total = 0
     for(let i = 0; i < values.length; i++){
         const pack = config.package[values[i]]
         total += pack.price
-        embeds[0].fields.push({
+        embeds.fields.push({
             name: `${pack.label} @ ${pack.price}`,
             value: `- ${pack.description}`
         })
     }
-    embeds[0].fields.push({
+    embeds.fields.push({
         name: `**ราคารวมทั้งสิ้น**`,
         value: `**\` ${total} บาท \`**`
     })
@@ -194,7 +218,7 @@ bot.on('interactionCreate', (interaction) => {
             
         interaction.message.delete()
         interaction.channel.send({
-            embeds: infomationBuy,
+            embeds: [infomationBuy],
             components: [w8transAndConfirm]
         })
         return
@@ -217,11 +241,22 @@ bot.on('interactionCreate', (interaction) => {
         var subIden = interaction.customId.substring(5, interaction.customId.length)    
         var packDetail = subIden.split('-')
         var packBuyer = {
+            id: packDetail[0],
             serial_code: generateSerialCode(),
             packs: getPacks(packDetail[1].split(','))
         }
+
+        const confInformation = initSerialSendInformation(packBuyer)
         
-        console.log(packBuyer)
+        bridge.query(`INSERT INTO pack_serial (serial_code, pack_data) VALUES (${packBuyer.serial_code}, ${JSON.stringify(packBuyer.packs)})`,(err, res, fs)=>{
+            // if(!res)return;
+            console.log(`\n\n[ Buy Successfully '${packBuyer.id}' ]\n   Code::> ${packBuyer.serial_code}\n   Res::> ${res}\n   Packs::> ${packDetail[1].split(',')}`)
+            interaction.message.delete()
+            interaction.channel.send({
+                embeds: [confInformation]
+            })
+        })
+
         return
     }
 
