@@ -11,11 +11,11 @@
     margin-left: 50%;
     transform: translateX(-50%);
     text-align: center;
-    animation: fadeIn 1.5s;
-    -webkit-animation: fadeIn 1.5s;
-    -moz-animation: fadeIn 1.5s;
-    -o-animation: fadeIn 1.5s;
-    -ms-animation: fadeIn 1.5s;
+    animation: fadeIn 1.3s;
+    -webkit-animation: fadeIn 1.3s;
+    -moz-animation: fadeIn 1.3s;
+    -o-animation: fadeIn 1.3s;
+    -ms-animation: fadeIn 1.3s;
 }
 
 #capital-img {

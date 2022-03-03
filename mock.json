@@ -1,0 +1,31 @@
+{
+    "label": "Package # 1",
+    "description": "แพ็คเริ่มต้น",
+    "price": 200,
+    "items": [{
+            "label": "ขนมปัง",
+            "name": "bread",
+            "total": 150
+        },
+        {
+            "label": "เงินสด",
+            "name": "money",
+            "total": 200
+        },
+        {
+            "label": "เงินสกปรก",
+            "name": "black_money",
+            "total": 300
+        },
+        {
+            "label": "เงินสด",
+            "name": "cash",
+            "total": 500
+        },
+        {
+            "label": "เงินธนาคาร",
+            "name": "bank",
+            "total": 500
+        }
+    ]
+}
