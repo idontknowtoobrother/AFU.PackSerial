@@ -1,31 +1,35 @@
+// setbody hide
+// document.body.style.display = 'none'
+// document.getElementById('notify-text').style.display = 'none'
+
 // vars
 let isOnWindow = false
 let isNotify = false
 
 // functions
-async function notify(text, time){
-    var notiQueue = new Promise((succeed, failed)=>{
-        if (isNotify)return;
+async function notify(text, time) {
+    var notiQueue = new Promise((succeed, failed) => {
+        if (isNotify) return;
         isNotify = true
         let elem = document.getElementById('notify-text')
-        elem.innerHTML  = text
+        elem.innerHTML = text
         elem.style.display = 'block'
-        setTimeout(()=>{
+        setTimeout(() => {
             succeed(elem)
         }, time)
     })
 
-    await notiQueue.then((elem)=>{
+    await notiQueue.then((elem) => {
         elem.style.display = 'none'
         isNotify = false
     })
-} 
+}
 
-const animateItems = (pack)=> {
-    
+const animateItems = (pack) => {
+
     // animation items
     console.log(pack)
-    
+
     // end
     fetch(`https://AFU.PackSerial/ActivedSerialCode`, {
         method: 'POST',
@@ -38,12 +42,12 @@ const animateItems = (pack)=> {
     })
 }
 
-const activeSerial = ()=> {
+const activeSerial = () => {
     var serial = document.getElementById('serial-code').value
-    
-    if(!serial){
+
+    if (!serial) {
         notify('<span style="color:red">กรุณากรอก Serial Code ?</span>', 4000)
-        return 
+        return
     }
 
     fetch(`https://AFU.PackSerial/ActiveSerialCode`, {
@@ -57,14 +61,9 @@ const activeSerial = ()=> {
     })
 }
 
-
-// setbody hide
-document.body.style.display = 'none'
-document.getElementById('notify-text').style.display = 'none'
-
 // event listener
 document.addEventListener('keydown', function(e) {
-    if(e.code != 'Escape' || !isOnWindow)return;
+    if (e.code != 'Escape' || !isOnWindow) return;
     this.body.style.display = 'none'
 
     fetch(`https://AFU.PackSerial/CloseWindow`, {
@@ -79,12 +78,12 @@ document.addEventListener('keydown', function(e) {
 
 window.addEventListener("message", (_e) => {
     var data = _e.data
-    if(!data) return;
+    if (!data) return;
 
-    if(data.action == 'openSerialWindow' && !isOnWindow){
+    if (data.action == 'openSerialWindow' && !isOnWindow) {
         isOnWindow = true
         document.body.style.display = 'block';
-    }else if(data.action == 'activePack'){
+    } else if (data.action == 'activePack') {
         animateItems(data.packData)
     }
 

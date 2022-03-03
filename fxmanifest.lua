@@ -23,9 +23,9 @@ server_scripts {
 ui_page 'Interface/ui.html'
 
 files {
-    'Interface/*.js',
-    'Interface/*.css',
-    'Interface/*.html',
+    'Interface/control.js',
+    'Interface/style.css',
+    'Interface/ui.html',
     'Interface/*.png',
     'Interface/*.gif',
     'Interface/*.jpg'
