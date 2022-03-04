@@ -59,7 +59,8 @@ end)
 createClientEvent('secure:openingPack', function(pack)
     SendNUIMessage({
         action = 'activePack',
-        packData = pack
+        packData = pack,
+        pathImg = Config.pathItemsImage
     })
 end)
 

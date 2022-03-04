@@ -72,16 +72,19 @@ local PackSerial = {
                 return
             end
 
-            MySQL.Async.execute('DELETE FROM pack_serial WHERE serial_code = @serial_code', {
-                ['@serial_code'] = serialCode
-            },function(rC)
-                if not rC then
-                    -- serial code ถูกใช้ไปแล้ว @ 2
-                    TriggerClientEvent('secure:packNotification', source, 2)
-                    return
-                end
-                self:packOpen(source, json.decode(pack))
-            end)
+            -- MySQL.Async.execute('DELETE FROM pack_serial WHERE serial_code = @serial_code', {
+            --     ['@serial_code'] = serialCode
+            -- },function(rC)
+            --     if not rC then
+            --         -- serial code ถูกใช้ไปแล้ว @ 2
+            --         TriggerClientEvent('secure:packNotification', source, 2)
+            --         return
+            --     end
+            --     self:packOpen(source, json.decode(pack))
+            -- end)
+
+            self:packOpen(source, json.decode(pack))
+
         end)
     end
 }
