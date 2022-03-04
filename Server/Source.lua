@@ -162,7 +162,7 @@ local Secure = {
     
         local dayLeft = tonumber(cbData.dayLeft)
         if dayLeft < 1 and dayLeft ~= -1 then
-            self:Destroyme('^4[ ^1PackSerial ^4]\n   ^1Expired :( ^0Please contact ^3AFU^0 to ^2renew^0')
+            self:destroyMe('^4[ ^1PackSerial ^4]\n   ^1Expired :( ^0Please contact ^3AFU^0 to ^2renew^0')
             return
         end
     
