@@ -1,5 +1,5 @@
 {
-    "devMode": true,
+    "devMode": false,
     "afu_token": "TOKEN_SESSION_HERE",
     "bot_token": "OTQ5MDMzNTQzODkwMjQzNjM1.YiEeXQ.emBXqALlEjd_e-LEOy9-Hex9W-Q",
     "categoryIdFocus": "949034143415677028",
