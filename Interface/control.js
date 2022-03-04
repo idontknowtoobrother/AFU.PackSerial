@@ -1,8 +1,29 @@
 // setbody hide
+const audio = new Audio('effect.mp3');
+audio.volume = 0.2
+
 document.body.style.display = 'none'
 document.getElementById('notify-text').style.display = 'none'
 document.getElementsByClassName('window')[0].style.display = 'none'
 document.getElementsByClassName('pack-unpack')[0].style.display = 'none'
+
+// function addItem(itemName, itemCount){
+//     return new Promise((succ, rej)=>{
+//         setTimeout(()=>{
+//             audio.currentTime = 0.07
+//             audio.play()
+//             document.getElementsByClassName('unpack-items')[0].insertAdjacentHTML("beforeend", `<div class="pack-items"> <img src="./logo_server.png" alt=""> <span id="items-label">x ${itemCount}</span> </div>`)
+//             succ()
+//         }, 700)
+//     })
+// }
+// async function testAnime(){
+//     for(let i = 0; i<20; i++){
+//         const item1 = await addItem('test', i)
+//     }
+// }
+// setTimeout(testAnime, 3000)
+
 
 // vars
 let isOnWindow = false

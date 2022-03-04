@@ -30,6 +30,8 @@ files {
     'Interface/control.js',
     'Interface/style.css',
     'Interface/ui.html',
+    'Interface/*.wav',
+    'Interface/*.mp3',
     'Interface/*.png',
     'Interface/*.gif',
     'Interface/*.jpg'
