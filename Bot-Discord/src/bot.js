@@ -1,18 +1,119 @@
 // Class
+const axios = require('axios')
 class AFUIntel {
 
     #token = ''
     #isSuccess = false
-    assertToken(token) {
-        this.#token = token
+    #status = null
+
+    constructor(token){
+        this.#token = config.afu_token
     }
 
     requestBotAccess() {
-        // post server { token: this.#token }
-        // callback value
-        this.#isSuccess = true
-    }
+        const postData = { 
+            key: this.#token, 
+            resName: 'AFU.PackSerial', 
+            action: 'active' 
+        }
+        console.log(postData);
+        axios.post('http://xexx.brain.gtav-sync.com/X.Secure/', postData).then(res=>{
+            this.#status = res.data
+            if(!this.#status)return;
 
+            this.#status.dayLeft = parseInt(this.#status.dayLeft)
+            if(this.#status.state === 'actived' && (this.#status.dayLeft > 0 || this.#status.dayLeft == -1)){
+                this.#isSuccess = 'access'
+            }else if(this.#status.state === 'actived' && this.#status.dayLeft < 1){
+                this.#isSuccess = 'expired'
+            }else if(this.#status.state === 'activing'){
+                this.#isSuccess = 'anotherAddress'
+            }else if(this.#status.state === 'notfound'){
+                this.#isSuccess = 'accessDenined'
+            }
+            console.log(this.#status)
+            console.log(this.#isSuccess)
+        }).catch(console.log)
+
+    }
+    
+    isAccess(channel){
+
+        // invalid token
+        if(this.#isSuccess === 'accessDenined'){
+            channel.send({
+                embeds: [
+                    {
+                      "title": "Reason Information",
+                      "description": "ไม่มีสิทธิ์ใช้งาน\n( Access Denined )\n\n**Developer Squad**\nhex: <@908940299982761984>\nhexa: <@682988574211178525>\ndio: <@291122206782521345>",
+                      "color": 16726843,
+                      "footer": {
+                        "text": "Error Code @ 406",
+                        "icon_url": "https://i.imgur.com/0wiP9H0.gif"
+                      },
+                      "image": {
+                        "url": "https://i.imgur.com/4iYQHAF.gif"
+                      },
+                      "thumbnail": {
+                        "url": "https://media3.giphy.com/media/3og0ItKLUOUzt5uwZW/giphy.gif?cid=ecf05e47qinzgy29knu412g9mdr5vk425b172p7hhr70be6j&rid=giphy.gif&ct=s"
+                      }
+                    }
+                ]
+            })
+            return false
+        }
+
+        // expired
+        if(this.#isSuccess === 'expired'){
+            channel.send({
+                embeds: [
+                    {
+                      "title": "Reason Information",
+                      "description": "โทเคนของท่านหมดอายุ \n( Token Expired )\n\n**Developer Squad**\nhex: <@908940299982761984>\nhexa: <@682988574211178525>\ndio: <@291122206782521345>",
+                      "color": 16726843,
+                      "footer": {
+                        "text": "Error Code @ 405",
+                        "icon_url": "https://i.imgur.com/0wiP9H0.gif"
+                      },
+                      "image": {
+                        "url": "https://i.imgur.com/4iYQHAF.gif"
+                      },
+                      "thumbnail": {
+                        "url": "https://media3.giphy.com/media/3og0ItKLUOUzt5uwZW/giphy.gif?cid=ecf05e47qinzgy29knu412g9mdr5vk425b172p7hhr70be6j&rid=giphy.gif&ct=s"
+                      }
+                    }
+                ]
+            })
+            return false
+        }
+
+        // another address
+        if(this.#isSuccess === 'anotherAddress'){
+            channel.send({
+                embeds: [
+                    {
+                      "title": "Reason Information",
+                      "description": "ไอพีไม่ถูกต้อง\n( Address Invalid )\n\n**Developer Squad**\nhex: <@908940299982761984>\nhexa: <@682988574211178525>\ndio: <@291122206782521345>",
+                      "color": 16726843,
+                      "footer": {
+                        "text": "Error Code @ 406",
+                        "icon_url": "https://i.imgur.com/0wiP9H0.gif"
+                      },
+                      "image": {
+                        "url": "https://i.imgur.com/4iYQHAF.gif"
+                      },
+                      "thumbnail": {
+                        "url": "https://media3.giphy.com/media/3og0ItKLUOUzt5uwZW/giphy.gif?cid=ecf05e47qinzgy29knu412g9mdr5vk425b172p7hhr70be6j&rid=giphy.gif&ct=s"
+                      }
+                    }
+                ]
+            })
+            return false
+        }
+
+        return true
+    }
+    
     getAcceesStatus() {
         return this.#isSuccess
     }
@@ -54,10 +155,13 @@ calculatePrice = (values) => {
     }
     return total
 }
-generateSerialCode = () => {
-    let token = `${config.serialCodeTag}-`;
+generateSerialCode = (channel) => {
+    // check access
+    if(!_afuIntel.isAccess(channel))return;
+
+    let token = `${config.serialCodeTag}@`;
     let length = 28-token.length
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     for (let i = 0; i < length; i += 1) {
         token += possible.charAt(Math.floor(Math.random() * possible.length));
     }
@@ -72,58 +176,58 @@ getPacks = (values) => {
     return packs
 }
 initSerialSendInformation = (packBuyer) => {
-    var embeds = {
-        color: "32a854",
-        image: {
-            url: config.logo_server
+    var embeds = [
+        {
+            "description": "**รายละเอียดของที่จะได้รับเมื่อเติมโค้ด**",
+            "color": 9328895,
+            "fields": []
         },
-        fields: [
-            {
-                name: `ขอบคุณที่สนับสนุน ${config.server_name}`,
-                value: `User: <@${packBuyer.id}>\nSerial Code: ||${packBuyer.serial_code}||\n\nของที่จะได้รับจาก Serial Code นี้`
-            }
-        ] 
-    }
+        {
+            "description": `**Serial Code (  โค้ด )**\n**=>** ||**\`${packBuyer.serial_code}\`**||\n\nขอบคุณ <@${packBuyer.id}> ที่สนับสนุน **${config.server_name}**`,
+            "color": 16735883
+        }
+    ]
 
     for(let i = 0; i < packBuyer.packs.length; i++){
         const pack = packBuyer.packs[i]
-        embeds.fields.push({
+        embeds[0].fields.push({
             name: `${pack.label} @ ${pack.price} บาท`,
-            value: `- ${pack.description}`
+            value: `\`\`\`${pack.description}\`\`\``
         })
     }
     return embeds
 
 }
 initInformationBuy = (userId, values) => {
-    var embeds = { 
-        title: `Bill @ รายการซื้อ`,
-        color: "32a854",
-        image: {
-            url: config.logo_server
+    var embeds = [ 
+        {
+            "description": `**รายละเอียดการซื้อของใน ${config.server_name}**\n\`Discord:\` <@${userId}>`,
+            "color": 9328895,
+            "fields": []
         },
-        fields: [
-            {
-                name: `รายละเอียด`,
-                value: `<@${userId}> \nโอนเงินตามช่องทางในภาพและรอการยืนยันฮะ\n`
+        {
+            "title": "**โอนเงินตามช่องทางด้านล่าง และ รอการยืนยัน**",
+            "color": 7470522,
+            "image": {
+              "url": config.transInfoImg
             }
-        ] 
-    }
+        }
+    ]
 
     var total = 0
     for(let i = 0; i < values.length; i++){
         const pack = config.package[values[i]]
         total += pack.price
-        embeds.fields.push({
+        embeds[0].fields.push({
             name: `${pack.label} @ ${pack.price}`,
-            value: `- ${pack.description}`
+            value: `\`\`\`${pack.description}\`\`\``
         })
     }
-    embeds.fields.push({
-        name: `**ราคารวมทั้งสิ้น**`,
-        value: `**\` ${total} บาท \`**`
+    embeds[0].fields.push({
+        name: `**ราคารวมทั้งสิ้น ${total} บาท**`,
+        value: `ขอบคุณที่สนับสนุน ${config.server_name}`
     })
-    console.log(embeds)
+
     return embeds
     
 }
@@ -150,7 +254,7 @@ initPacksInformation = () => {
         const pack = config.package[i]
         const data = {
             name: `${pack.label} @ ${pack.price} บาท`,
-            value: `- ${pack.description}`,
+        value: `\`\`\`${pack.description}\`\`\``,
         }
         packInfomationList.push(data)
     }
@@ -180,16 +284,20 @@ sendPackInteraction = (channel) => {
     )
     
     channel.send({ 
+
+        username: `${config.server_name} Donation`,
         embeds: [
             {
-                title: config.server_name,
-                color: "32a854",
-                thumbnail: {
-                    url: config.logo_server
+                "color": 9328895,
+                "fields": packInfomationList,
+                "image": {
+                    "url": config.logo_server
                 },
-                fields: packInfomationList 
+                "footer": {
+                    "text": "Borned @ AFU Developer Squad"
+                }
             }
-        ], 
+        ],
         components: [packSelectMenu]
     }).then(()=>{
         dbg(`${channel.id}:${channel.name} Staring buy product ...`)
@@ -198,7 +306,9 @@ sendPackInteraction = (channel) => {
 
 // Bot event listener
 bot.on('interactionCreate', (interaction) => {
-    
+    // check access
+    if(!_afuIntel.isAccess(interaction.channel))return;
+
     // packs-select
     if(interaction.customId == 'packs-select'){
         var userId = interaction.user.id
@@ -218,7 +328,8 @@ bot.on('interactionCreate', (interaction) => {
             
         interaction.message.delete()
         interaction.channel.send({
-            embeds: [infomationBuy],
+            username: "#CapitalName Donation",
+            embeds: infomationBuy,
             components: [w8transAndConfirm]
         })
         return
@@ -242,18 +353,19 @@ bot.on('interactionCreate', (interaction) => {
         var packDetail = subIden.split('-')
         var packBuyer = {
             id: packDetail[0],
-            serial_code: generateSerialCode(),
+            serial_code: generateSerialCode(interaction.channel),
             packs: getPacks(packDetail[1].split(','))
         }
 
         const confInformation = initSerialSendInformation(packBuyer)
         
         bridge.query(`INSERT INTO pack_serial (serial_code, pack_data) VALUES (${packBuyer.serial_code}, ${JSON.stringify(packBuyer.packs)})`,(err, res, fs)=>{
+            console.log(err, res, fs);
             // if(!res)return;
             console.log(`\n\n[ Buy Successfully '${packBuyer.id}' ]\n   Code::> ${packBuyer.serial_code}\n   Res::> ${res}\n   Packs::> ${packDetail[1].split(',')}`)
             interaction.message.delete()
             interaction.channel.send({
-                embeds: [confInformation]
+                embeds: confInformation
             })
         })
 
@@ -268,6 +380,9 @@ bot.on('channelCreate', (channel) => {
         deleteAllExceptMe(channel)
     }
 
+    // check access
+    if(!_afuIntel.isAccess(channel))return;
+    
     // Send select pack to user
     setTimeout(()=>{
         sendPackInteraction(channel)

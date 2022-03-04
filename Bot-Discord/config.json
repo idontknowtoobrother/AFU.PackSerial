@@ -12,61 +12,77 @@
     "server_database": {
         "host": "localhost",
         "user": "root",
-        "password": "",
-        "database": "ชื่อฐานข้อมูลเซิฟ"
+        "password": "whereismypassword",
+        "database": "afubase"
     },
     "serialCodeTag": "AFU",
     "logo_server": "https://media.discordapp.net/attachments/908983717379334154/937541112778874940/SECURE200x200.png",
-    "transInfoImg": "https://media.discordapp.net/attachments/908983717379334154/937541112778874940/SECURE200x200.png",
-    "package": [{
-        "label": "Starter Pack ( แพ็คเริ่มต้น )",
-        "description": "สำหรับมือใหม่ที่พึ่งเข้าเซิฟมาและอยากฟาร์มไว",
-        "price": 400,
-        "items": [{
-            "label": "ขนมปัง",
-            "name": "bread",
-            "total": 15
-        }, {
-            "label": "เงินสด",
-            "name": "money",
-            "total": 100
-        }, {
-            "label": "เงินสด",
-            "name": "cash",
-            "total": 200
-        }, {
-            "label": "เงินสกปรก",
-            "name": "black_money",
-            "total": 200
-        }, {
-            "label": "เงินธนาคาร",
-            "name": "bank",
-            "total": 150
-        }]
-    }, {
-        "label": "Starter Pack 2 ( แพ็คเริ่มต้น 2 )",
-        "description": "สำหรับมือใหม่ที่พึ่งเข้าเซิฟมาและอยากฟาร์มไว",
-        "price": 300,
-        "items": [{
-            "label": "ขนมปัง",
-            "name": "bread",
-            "total": 200
-        }, {
-            "label": "เงินสด",
-            "name": "money",
-            "total": 300
-        }, {
-            "label": "เงินสด",
-            "name": "cash",
-            "total": 300
-        }, {
-            "label": "เงินสกปรก",
-            "name": "black_money",
-            "total": 100
-        }, {
-            "label": "เงินธนาคาร",
-            "name": "bank",
-            "total": 500
-        }]
-    }]
+    "transInfoImg": "https://i.imgur.com/YeYcfN0.png",
+    "package": [
+        {
+            "label": "Starter Pack ( แพ็คเริ่มต้น )",
+            "description": "- กาชาปองเริ่มต้น 10 ลูก\n- เงินสด 300\n- เงินสกปรก 200\n- เงินธนาคาร 150",
+            "price": 400,
+            "items": [
+                {
+                    "label": "Gashapong # 0",
+                    "name": "gacha0",
+                    "total": 15
+                }, 
+                {
+                    "label": "Cash",
+                    "name": "money",
+                    "total": 100
+                }, 
+                {
+                    "label": "Cash",
+                    "name": "cash",
+                    "total": 200
+                }, 
+                {
+                    "label": "Black Money",
+                    "name": "black_money",
+                    "total": 200
+                }, 
+                {
+                    "label": "Bank Cash",
+                    "name": "bank",
+                    "total": 150
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
+            "description": "- กาชาปองเริ่มต้น 20 ลูก\n- เงินสด 1000\n- เงินสกปรก 2000\n- เงินธนาคาร 1000",
+            "price": 500,
+            "items": [
+                {
+                    "label": "Gashapong # 0",
+                    "name": "gacha0",
+                    "total": 20
+                }, 
+                {
+                    "label": "Cash",
+                    "name": "money",
+                    "total": 500
+                }, 
+                {
+                    "label": "Cash",
+                    "name": "cash",
+                    "total": 500
+                }, 
+                {
+                    "label": "Black Money",
+                    "name": "black_money",
+                    "total": 1000
+                }, 
+                {
+                    "label": "Bank Cash",
+                    "name": "bank",
+                    "total": 1000
+                }
+            ]
+        }
+    ]
 }
