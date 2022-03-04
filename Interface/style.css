@@ -55,7 +55,6 @@ body{
 .unpack-items {
     text-align: center;
     padding: 10px;
-    padding-left: 35px;
     display: grid;
     gap: 30px;
     grid-template-columns: 85px 85px 85px 85px 85px 85px 85px;
