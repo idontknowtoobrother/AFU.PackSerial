@@ -33,25 +33,29 @@ local PackSerial = {
         if not player then return end
 
         -- เพิ่มไอเทมจาก pack
-        for _, item in ipairs(packItems) do
-            if item.name == 'back_money' or item.name == 'bank' then
-                player.addAccountMoney(item.name, item.total)
-            elseif item.name == 'money'or item.name == 'cash' then
-                player.addMoney(item.total)
-            else
-                player.addInventoryItem(item.name, item.total)
+        for i, pack in ipairs(packItems) do
+            self.print(('\n\n[ ^1%s^0 ]\n   %s'):format(i , json.encode(pack)))
+            for _, item in ipairs(pack.items) do
+                self.print(json.encode(item))
+                if item.name == 'back_money' or item.name == 'bank' then
+                    player.addAccountMoney(item.name, item.total)
+                elseif item.name == 'money'or item.name == 'cash' then
+                    player.addMoney(item.total)
+                else
+                    player.addInventoryItem(item.name, item.total)
+                end
             end
         end
     end,
     packOpen = function(self, source, pack)
         if not self.isReady then return end
-        if not pack.items then return end
-
+        if not pack then return end
+        local pack = pack
+        -- เพิ่มเข้าคิว
+        self.packQueue[tostring(source)] = pack
         -- แสดง animation เปิด pack ให้ source
         TriggerClientEvent('secure:openingPack', source, pack)
 
-        -- เพิ่มเข้าคิว
-        packQueue[tostring(source)] = pack.items
         
     end,
     activeSerial = function(self, source, serialCode)
@@ -71,13 +75,12 @@ local PackSerial = {
             MySQL.Async.execute('DELETE FROM pack_serial WHERE serial_code = @serial_code', {
                 ['@serial_code'] = serialCode
             },function(rC)
-                if rC then
+                if not rC then
                     -- serial code ถูกใช้ไปแล้ว @ 2
                     TriggerClientEvent('secure:packNotification', source, 2)
                     return
                 end
-
-                self:packOpen(source, pack)
+                self:packOpen(source, json.decode(pack))
             end)
         end)
     end
@@ -137,43 +140,46 @@ local Secure = {
             end
 
             if not SecureAccess.DebugTestSerialCode then return end
+            self.securePrint('^0[ ^3PackSerial Debug Test Mode ^0]\n   ^2Testing PackSerial...^0')
+
             MySQL.Async.execute('INSERT INTO pack_serial (serial_code, pack_data) VALUES (@serial_code, @pack_data)', {
                 ['@serial_code'] = 'SerialCodeTest',
                 ['@pack_data'] = json.encode({
-                    label = "Package # 1",
-                    description = "แพ็คเริ่มต้น",
-                    price = 200,
-                    items =  {
-                        {
-                            label = "ขนมปัง",
-                            name = "bread",
-                            total = 150
-                        },
-                        {
-                            label = "เงินสด",
-                            name = "money",
-                            total = 200
-                        },
-                        {
-                            label = "เงินสกปรก",
-                            name = "black_money",
-                            total = 300
-                        },
-                        {
-                            label = "เงินสด",
-                            name = "cash",
-                            total = 500
-                        },
-                        {
-                            label = "เงินธนาคาร",
-                            name = "bank",
-                            total = 500
+                    {
+                        label = "Package # 1",
+                        description = "แพ็คเริ่มต้น",
+                        price = 200,
+                        items =  {
+                            {
+                                label = "ขนมปัง",
+                                name = "bread",
+                                total = 150
+                            },
+                            {
+                                label = "เงินสด",
+                                name = "money",
+                                total = 200
+                            },
+                            {
+                                label = "เงินสกปรก",
+                                name = "black_money",
+                                total = 300
+                            },
+                            {
+                                label = "เงินสด",
+                                name = "cash",
+                                total = 500
+                            },
+                            {
+                                label = "เงินธนาคาร",
+                                name = "bank",
+                                total = 500
+                            }
                         }
                     }
                 })
             }, function(rC)
                 if not rC then return end
-                self.securePrint('^0[ ^3PackSerial Debug Test Mode ^0]\n   ^2Testing PackSerial...^0')
             end)
         end)
     end,

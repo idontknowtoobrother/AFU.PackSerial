@@ -1,6 +1,6 @@
 // setbody hide
-// document.body.style.display = 'none'
-// document.getElementById('notify-text').style.display = 'none'
+document.body.style.display = 'none'
+document.getElementById('notify-text').style.display = 'none'
 
 // vars
 let isOnWindow = false
@@ -24,22 +24,35 @@ async function notify(text, time) {
         isNotify = false
     })
 }
+const closeWindow = (e)=> {
+    if (e!= undefined || e!= null){
+        if (e.code != 'Escape' || !isOnWindow) return;
+    }
+
+    document.body.style.display = 'none'
+    fetch(`https://AFU.PackSerial/CloseWindow`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+        }
+    }).then().catch()
+
+    isOnWindow = false
+}
 
 const animateItems = (pack) => {
 
     // animation items
-    console.log(pack)
+    console.log(JSON.stringify(pack))
+    closeWindow()
 
     // end
     fetch(`https://AFU.PackSerial/ActivedSerialCode`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: JSON.stringify({
-            serialCode: serial
-        })
-    })
+        }
+    }).then().catch()
 }
 
 const activeSerial = () => {
@@ -58,22 +71,12 @@ const activeSerial = () => {
         body: JSON.stringify({
             serialCode: serial
         })
-    })
+    }).then().catch()
 }
 
 // event listener
 document.addEventListener('keydown', function(e) {
-    if (e.code != 'Escape' || !isOnWindow) return;
-    this.body.style.display = 'none'
-
-    fetch(`https://AFU.PackSerial/CloseWindow`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-        }
-    });
-
-    isOnWindow = false
+    closeWindow(e)
 })
 
 window.addEventListener("message", (_e) => {
@@ -82,9 +85,14 @@ window.addEventListener("message", (_e) => {
 
     if (data.action == 'openSerialWindow' && !isOnWindow) {
         isOnWindow = true
+        document.getElementById('serial-code').value = ''
+        document.getElementById('capital-label').innerHTML = data.serverName
+        document.getElementById('capital-img').src = data.logoName
         document.body.style.display = 'block';
     } else if (data.action == 'activePack') {
         animateItems(data.packData)
+    }else if (data.action == 'notifyText'){
+        notify(data.text, data.time)
     }
 
 })

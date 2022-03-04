@@ -6,15 +6,9 @@
 
 --]]
 
---@ Config
-local Config = {
-    openWindowKey = Config.openWindowKey,
-    pathItemsImage = Config.pathItemsImage
-}
-
 local NotificationCase = {
-    'Serial Code not correctly',
-    'Serial Code is actived by another player',
+    {'Serial Code <span style="color:red">ไม่ถูกต้อง</span>', 3000},
+    {'Serial Code <span style="color:red">ถูกกใช้ไปแล้ว</span>', 3000}
 }
 
 --@ functions
@@ -45,7 +39,9 @@ local PackSerial = {
         setMouseActive(true)
         TriggerScreenblurFadeIn(0)
         SendNUIMessage({
-            action = 'openSerialWindow'
+            action = 'openSerialWindow',
+            serverName = Config.serverName,
+            logoName = Config.serverLogoName
         })
     end
 }
@@ -53,7 +49,11 @@ local PackSerial = {
 
 --@ Event Register
 createClientEvent('secure:packNotification', function(caseIndex)
-    print(NotificationCase[caseIndex])
+    SendNUIMessage({
+        action = 'notifyText',
+        text = NotificationCase[caseIndex][1],
+        time = NotificationCase[caseIndex][2]
+    })
 end)
 
 createClientEvent('secure:openingPack', function(pack)
@@ -80,3 +80,8 @@ RegisterCommand('openPSWindow', function()
     PackSerial:openMenu()
 end)
 RegisterKeyMapping('openPSWindow', 'Pack Serial Window', 'keyboard', string.lower(Config.openWindowKey))
+
+AddEventHandler('onResourceStop', function(resName)
+    if resName ~= GetCurrentResourceName() then return end
+    TriggerScreenblurFadeOut(0)
+end)

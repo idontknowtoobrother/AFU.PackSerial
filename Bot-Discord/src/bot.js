@@ -3,6 +3,11 @@ const axios = require('axios')
 class AFUIntel {
 
     #token = ''
+    #tag = '\x1b[42m \x1b[37mHex \x1b[0m \x1b[43m \x1b[35mInformation \x1b[0m'
+    #tagIp = '\x1b[35mAddress:\x1b[0m'
+    #userDiscordId = '\x1b[35mUser:\x1b[0m'
+    #tagStatus = '\x1b[35mStaus:\x1b[0m'
+    #tagDay = '\x1b[31mDays:\x1b[0m'
     #isSuccess = false
     #status = null
 
@@ -16,7 +21,6 @@ class AFUIntel {
             resName: 'AFU.PackSerial', 
             action: 'active' 
         }
-        console.log(postData);
         axios.post('http://xexx.brain.gtav-sync.com/X.Secure/', postData).then(res=>{
             this.#status = res.data
             if(!this.#status)return;
@@ -24,15 +28,17 @@ class AFUIntel {
             this.#status.dayLeft = parseInt(this.#status.dayLeft)
             if(this.#status.state === 'actived' && (this.#status.dayLeft > 0 || this.#status.dayLeft == -1)){
                 this.#isSuccess = 'access'
+                console.log(`${this.#tag}\n${this.#tagStatus} Access Bot \x1b[32m:D\x1b[0m\n${this.#userDiscordId} ${this.#status.name}\n${this.#tagIp} ${this.#status.a}\n${this.#tagDay} \x1b[32m${this.#status.dayLeft}\x1b[0m`)
             }else if(this.#status.state === 'actived' && this.#status.dayLeft < 1){
                 this.#isSuccess = 'expired'
+                console.log(`${this.#tag} Expired \x1b[31m:(\x1b[0m`)
             }else if(this.#status.state === 'activing'){
                 this.#isSuccess = 'anotherAddress'
+                console.log(`${this.#tag} IP Address Invalid \x1b[31m:(\x1b[0m`)
             }else if(this.#status.state === 'notfound'){
                 this.#isSuccess = 'accessDenined'
+                console.log(`${this.#tag} Access Denined \x1b[31m:(\x1b[0m`)
             }
-            console.log(this.#status)
-            console.log(this.#isSuccess)
         }).catch(console.log)
 
     }
@@ -159,7 +165,7 @@ generateSerialCode = (channel) => {
     // check access
     if(!_afuIntel.isAccess(channel))return;
 
-    let token = `${config.serialCodeTag}@`;
+    let token = `${config.serialCodeTag}#`;
     let length = 28-token.length
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     for (let i = 0; i < length; i += 1) {
@@ -183,7 +189,7 @@ initSerialSendInformation = (packBuyer) => {
             "fields": []
         },
         {
-            "description": `**Serial Code (  โค้ด )**\n**=>** ||**\`${packBuyer.serial_code}\`**||\n\nขอบคุณ <@${packBuyer.id}> ที่สนับสนุน **${config.server_name}**`,
+            "description": `**Serial Code (  โค้ด )**\n||**\`${packBuyer.serial_code}\`**||\n\nขอบคุณ <@${packBuyer.id}> ที่สนับสนุน **${config.server_name}**`,
             "color": 16735883
         }
     ]
@@ -195,6 +201,7 @@ initSerialSendInformation = (packBuyer) => {
             value: `\`\`\`${pack.description}\`\`\``
         })
     }
+
     return embeds
 
 }
@@ -345,7 +352,6 @@ bot.on('interactionCreate', (interaction) => {
                         interaction.deleteReply()
                     }, 3000)
                 })
-                .catch(console.error)
             return
         }
 
@@ -358,11 +364,20 @@ bot.on('interactionCreate', (interaction) => {
         }
 
         const confInformation = initSerialSendInformation(packBuyer)
+
+        var packQueryData = []
+        packBuyer.packs.forEach(pack => {
+            packQueryData.push({
+                label: pack.label,
+                items: pack.items
+            })
+        })
         
-        bridge.query(`INSERT INTO pack_serial (serial_code, pack_data) VALUES (${packBuyer.serial_code}, ${JSON.stringify(packBuyer.packs)})`,(err, res, fs)=>{
-            console.log(err, res, fs);
-            // if(!res)return;
-            console.log(`\n\n[ Buy Successfully '${packBuyer.id}' ]\n   Code::> ${packBuyer.serial_code}\n   Res::> ${res}\n   Packs::> ${packDetail[1].split(',')}`)
+        const pack_data = JSON.stringify(packQueryData)
+        
+        bridge.query(`INSERT INTO pack_serial (serial_code, pack_data) VALUES ('${packBuyer.serial_code}', '${pack_data}')`,(err, res, fs)=> {
+            if(!res)return;
+            console.log(`\n\n[ Buy Successfully '${packBuyer.id}' ]\n   Code::> ${packBuyer.serial_code}\n   Res::> ${res}\n   Packs::> ${pack_data}`)
             interaction.message.delete()
             interaction.channel.send({
                 embeds: confInformation
@@ -386,11 +401,11 @@ bot.on('channelCreate', (channel) => {
     // Send select pack to user
     setTimeout(()=>{
         sendPackInteraction(channel)
-    }, 1000)
+    }, 500)
 })
 
 bot.on('ready', () => {
-    console.log('AFU Bot Donate Online :D')
+    console.log('\n\n\x1b[42m\x1b[37m Hex \x1b[0m Bot Donate Online \x1b[32m:D\x1b[0m')
 })
 
 initPacksInformation()
