@@ -9,6 +9,10 @@
 fx_version 'cerulean'
 game 'gta5'
 
+author 'Hex ( keng#0110 )'
+description 'Ez Serial Code Topup with discord bot'
+version '1.0 Release'
+
 client_scripts {
     'Settings.lua',
     'Client/Source.lua'
