@@ -15,7 +15,7 @@ body{
     background: rgba(0, 0, 0, 0.4);
 }
 
-.window {
+.window, .pack-unpack {
     width: 800px;
     height: 500px;
     margin-top: 8%;
@@ -27,6 +27,22 @@ body{
     -moz-animation: fadeIn 1.3s;
     -o-animation: fadeIn 1.3s;
     -ms-animation: fadeIn 1.3s;
+}
+
+.unpack-label {
+    font-size: 35px;
+    text-shadow: 1px 1px 2px black;
+    margin-bottom: 20px;
+}
+
+.unpack-items {
+    text-align: center;
+    padding: 10px;
+    padding-left: 35px;
+    display: grid;
+    gap: 30px;
+    grid-template-columns: 85px 85px 85px 85px 85px 85px 85px;
+    grid-template-rows: 85px 85px 85px 85px 85px 85px 85px;
 }
 
 #text-close-instruct{

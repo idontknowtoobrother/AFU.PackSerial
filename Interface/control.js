@@ -1,6 +1,8 @@
 // setbody hide
 document.body.style.display = 'none'
 document.getElementById('notify-text').style.display = 'none'
+document.getElementsByClassName('window')[0].style.display = 'none'
+document.getElementsByClassName('pack-unpack')[0].style.display = 'none'
 
 // vars
 let isOnWindow = false
