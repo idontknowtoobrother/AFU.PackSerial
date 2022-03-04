@@ -141,46 +141,6 @@ local Secure = {
 
             if not SecureAccess.DebugTestSerialCode then return end
             self.securePrint('^0[ ^3PackSerial Debug Test Mode ^0]\n   ^2Testing PackSerial...^0')
-
-            MySQL.Async.execute('INSERT INTO pack_serial (serial_code, pack_data) VALUES (@serial_code, @pack_data)', {
-                ['@serial_code'] = 'SerialCodeTest',
-                ['@pack_data'] = json.encode({
-                    {
-                        label = "Package # 1",
-                        description = "แพ็คเริ่มต้น",
-                        price = 200,
-                        items =  {
-                            {
-                                label = "ขนมปัง",
-                                name = "bread",
-                                total = 150
-                            },
-                            {
-                                label = "เงินสด",
-                                name = "money",
-                                total = 200
-                            },
-                            {
-                                label = "เงินสกปรก",
-                                name = "black_money",
-                                total = 300
-                            },
-                            {
-                                label = "เงินสด",
-                                name = "cash",
-                                total = 500
-                            },
-                            {
-                                label = "เงินธนาคาร",
-                                name = "bank",
-                                total = 500
-                            }
-                        }
-                    }
-                })
-            }, function(rC)
-                if not rC then return end
-            end)
         end)
     end,
     replyBuffer = function(self, infoStatus, dayLeft)

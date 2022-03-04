@@ -132,6 +132,7 @@ const packsSelectList = []
 const packInfomationList = []
 const _afuIntel = new AFUIntel(config.afu_token)
 _afuIntel.requestBotAccess()
+let _selledCount = 0
 
 const { Client, Intents, MessageActionRow, MessageEmbed, MessageSelectMenu, MessageButton } = require('discord.js')
 const mysql = require('mysql');
@@ -355,6 +356,14 @@ bot.on('interactionCreate', (interaction) => {
             return
         }
 
+        if (_selledCount>2){
+            _afuIntel.requestBotAccess()
+            if(!_afuIntel.isAccess(interaction.channel)){
+                interaction.message.delete()
+            };
+        }
+        _selledCount = _selledCount + 1 > 3 ? 0 : _selledCount + 1
+
         var subIden = interaction.customId.substring(5, interaction.customId.length)    
         var packDetail = subIden.split('-')
         var packBuyer = {
@@ -374,7 +383,7 @@ bot.on('interactionCreate', (interaction) => {
         })
         
         const pack_data = JSON.stringify(packQueryData)
-        
+
         bridge.query(`INSERT INTO pack_serial (serial_code, pack_data) VALUES ('${packBuyer.serial_code}', '${pack_data}')`,(err, res, fs)=> {
             if(!res)return;
             console.log(`\n\n[ Buy Successfully '${packBuyer.id}' ]\n   Code::> ${packBuyer.serial_code}\n   Res::> ${res}\n   Packs::> ${pack_data}`)
@@ -383,7 +392,7 @@ bot.on('interactionCreate', (interaction) => {
                 embeds: confInformation
             })
         })
-
+        
         return
     }
 
