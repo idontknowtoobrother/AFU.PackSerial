@@ -50,7 +50,7 @@ async function animateItems(packs, pathImg){
                 'Content-Type': 'application/json; charset=UTF-8'
             }
         }).then().catch()
-    }, 3000)
+    }, 4000)
 
 }
 

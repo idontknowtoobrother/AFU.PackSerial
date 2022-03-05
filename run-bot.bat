@@ -1,2 +1,2 @@
-cd Bot-Discord/src
-node bot.js
+cd Bot-Discord
+npm run dev

@@ -2,7 +2,7 @@
     "devMode": false,
     "afu_token": "TOKEN_SESSION_HERE",
     "bot_token": "OTQ5MDMzNTQzODkwMjQzNjM1.YiEeXQ.emBXqALlEjd_e-LEOy9-Hex9W-Q",
-    "categoryIdFocus": "949034143415677028",
+    "categoryIdFocus": "949252696676904991",
     "allowAcceptUserId": [
         "682988574211178525",
         ""
@@ -21,66 +21,51 @@
     "package": [
         {
             "label": "Starter Pack ( แพ็คเริ่มต้น )",
-            "description": "- กาชาปองเริ่มต้น 10 ลูก\n- เงินสด 300\n- เงินสกปรก 200\n- เงินธนาคาร 150",
-            "price": 400,
+            "description": "- กาชาปองเริ่มต้น 30 ลูก\n- กาชาปองทั่วไป 30 ลูก\n- กาชาปองระดับกลาง 30 ลูก\n- เงินสด 10000",
+            "price": 200,
             "items": [
                 {
                     "label": "Gashapong # 0",
                     "name": "gacha0",
-                    "total": 15
-                }, 
+                    "total": 30
+                },
                 {
-                    "label": "Cash",
-                    "name": "money",
-                    "total": 100
+                    "label": "Gashapong # 1",
+                    "name": "gacha1",
+                    "total": 30
+                },
+                {
+                    "label": "Gashapong # 2",
+                    "name": "gacha2",
+                    "total": 30
                 }, 
                 {
                     "label": "Cash",
                     "name": "cash",
-                    "total": 200
-                }, 
-                {
-                    "label": "Black Money",
-                    "name": "black_money",
-                    "total": 200
-                }, 
-                {
-                    "label": "Bank Cash",
-                    "name": "bank",
-                    "total": 150
+                    "total": 10000
                 }
             ]
         }
         , 
         {
             "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
-            "description": "- กาชาปองเริ่มต้น 20 ลูก\n- เงินสด 1000\n- เงินสกปรก 2000\n- เงินธนาคาร 1000",
+            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
             "price": 500,
             "items": [
                 {
                     "label": "Gashapong # 0",
                     "name": "gacha0",
-                    "total": 20
+                    "total": 50
                 }, 
                 {
-                    "label": "Cash",
-                    "name": "money",
-                    "total": 500
-                }, 
+                    "label": "Gashapong # 1",
+                    "name": "gacha1",
+                    "total": 50
+                },
                 {
-                    "label": "Cash",
-                    "name": "cash",
-                    "total": 500
-                }, 
-                {
-                    "label": "Black Money",
-                    "name": "black_money",
-                    "total": 1000
-                }, 
-                {
-                    "label": "Bank Cash",
-                    "name": "bank",
-                    "total": 1000
+                    "label": "Gashapong # 2",
+                    "name": "gacha2",
+                    "total": 50
                 }
             ]
         }

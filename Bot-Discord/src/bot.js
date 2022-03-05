@@ -391,6 +391,8 @@ bot.on('interactionCreate', (interaction) => {
             interaction.channel.send({
                 embeds: confInformation
             })
+            interaction.channel.setName("✅")
+            .catch(console.error);
         })
         
         return
