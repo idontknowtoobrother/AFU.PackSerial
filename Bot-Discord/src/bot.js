@@ -28,33 +28,6 @@ const hex_brain = {
             Intents.FLAGS.GUILD_MESSAGE_REACTIONS
         ]
     }),
-    requestBotAccess: function() {
-
-        axios.post('http://xexx.brain.gtav-sync.com/X.Secure/', { 
-            key: this.token, 
-            resName: 'AFU.PackSerial', 
-            action: 'active' 
-        }).then(res=>{
-            this.status = res.data
-            if(!this.status)return;
-            this.status.dayLeft = parseInt(this.status.dayLeft)
-            if(this.status.state === 'actived' && (this.status.dayLeft > 0 || this.status.dayLeft == -1)){
-                this.isSuccess = 'access'
-                console.log(`${this.tag}\n${this.tagStatus} Access Bot \x1b[32m:D\x1b[0m\n${this.userDiscordId} ${this.status.name}\n${this.tagIp} ${this.status.a}\n${this.tagDay} \x1b[32m${this.status.dayLeft}\x1b[0m`)
-                console.log('\n\x1b[42m\x1b[37m Bot Status \x1b[0m Bot Donate Online \x1b[32m:D\x1b[0m')
-            }else if(this.status.state === 'actived' && this.status.dayLeft < 1){
-                this.isSuccess = 'expired'
-                console.log(`${this.tag} Expired \x1b[31m:(\x1b[0m`)
-            }else if(this.status.state === 'activing'){
-                this.isSuccess = 'anotherAddress'
-                console.log(`${this.tag} IP Address Invalid \x1b[31m:(\x1b[0m`)
-            }else if(this.status.state === 'notfound'){
-                this.isSuccess = 'accessDenined'
-                console.log(`${this.tag} Access Denined \x1b[31m:(\x1b[0m`)
-            }
-        }).catch(console.log)
-
-    },
     getAcceesStatus: function() {
         return this.isSuccess
     },
@@ -407,6 +380,33 @@ const hex_brain = {
             })
             cb(dataIncrease[0], hex_brain.buyerList[dataIncrease[0]], interaction)
         }
+    },
+    requestBotAccess: function() {
+
+        axios.post('http://xexx.brain.gtav-sync.com/X.Secure/', { 
+            key: this.token, 
+            resName: 'AFU.PackSerial', 
+            action: 'active' 
+        }).then(res=>{
+            this.status = res.data
+            if(!this.status)return;
+            this.status.dayLeft = parseInt(this.status.dayLeft)
+            if(this.status.state === 'actived' && (this.status.dayLeft > 0 || this.status.dayLeft == -1)){
+                this.isSuccess = 'access'
+                console.log(`${this.tag}\n${this.tagStatus} Access Bot \x1b[32m:D\x1b[0m\n${this.userDiscordId} ${this.status.name}\n${this.tagIp} ${this.status.a}\n${this.tagDay} \x1b[32m${this.status.dayLeft}\x1b[0m`)
+                console.log('\n\x1b[42m\x1b[37m Bot Status \x1b[0m Bot Donate Online \x1b[32m:D\x1b[0m')
+            }else if(this.status.state === 'actived' && this.status.dayLeft < 1){
+                this.isSuccess = 'expired'
+                console.log(`${this.tag} Expired \x1b[31m:(\x1b[0m`)
+            }else if(this.status.state === 'activing'){
+                this.isSuccess = 'anotherAddress'
+                console.log(`${this.tag} IP Address Invalid \x1b[31m:(\x1b[0m`)
+            }else if(this.status.state === 'notfound'){
+                this.isSuccess = 'accessDenined'
+                console.log(`${this.tag} Access Denined \x1b[31m:(\x1b[0m`)
+            }
+        }).catch(console.log)
+
     },
     updateBillInfo : function(userId, dataUpadate, interaction){
         var totalPrice = 0
