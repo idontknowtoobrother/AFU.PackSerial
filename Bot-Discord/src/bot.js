@@ -1,3 +1,7 @@
+// 💬 Export from AFU brain => discord: keng#0110 / https://discord.gg/awayfromus  
+// 🐌 @Copyright AFU
+// ☕ Thanks For Coffee Tips 
+
 // Module include
 const { Client, Intents, MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js')
 const config = require('../config.json')
@@ -37,73 +41,16 @@ const hex_brain = {
 
         // invalid token
         if(this.isSuccess === 'accessDenined'){
-            channel.send({
-                embeds: [
-                    {
-                      "title": "Reason Information",
-                      "description": "ไม่มีสิทธิ์ใช้งาน\n( Access Denined )\n\n**Developer Squad**\nhex: <@908940299982761984>\nhexa: <@682988574211178525>\ndio: <@291122206782521345>",
-                      "color": 16726843,
-                      "footer": {
-                        "text": "Error Code @ 406",
-                        "icon_url": "https://i.imgur.com/0wiP9H0.gif"
-                      },
-                      "image": {
-                        "url": "https://i.imgur.com/4iYQHAF.gif"
-                      },
-                      "thumbnail": {
-                        "url": "https://media3.giphy.com/media/3og0ItKLUOUzt5uwZW/giphy.gif?cid=ecf05e47qinzgy29knu412g9mdr5vk425b172p7hhr70be6j&rid=giphy.gif&ct=s"
-                      }
-                    }
-                ]
-            })
             return false
         }
 
         // expired
         if(this.isSuccess === 'expired'){
-            channel.send({
-                embeds: [
-                    {
-                      "title": "Reason Information",
-                      "description": "โทเคนของท่านหมดอายุ \n( Token Expired )\n\n**Developer Squad**\nhex: <@908940299982761984>\nhexa: <@682988574211178525>\ndio: <@291122206782521345>",
-                      "color": 16726843,
-                      "footer": {
-                        "text": "Error Code @ 405",
-                        "icon_url": "https://i.imgur.com/0wiP9H0.gif"
-                      },
-                      "image": {
-                        "url": "https://i.imgur.com/4iYQHAF.gif"
-                      },
-                      "thumbnail": {
-                        "url": "https://media3.giphy.com/media/3og0ItKLUOUzt5uwZW/giphy.gif?cid=ecf05e47qinzgy29knu412g9mdr5vk425b172p7hhr70be6j&rid=giphy.gif&ct=s"
-                      }
-                    }
-                ]
-            })
             return false
         }
 
         // another address
         if(this.isSuccess === 'anotherAddress'){
-            channel.send({
-                embeds: [
-                    {
-                      "title": "Reason Information",
-                      "description": "ไอพีไม่ถูกต้อง\n( Address Invalid )\n\n**Developer Squad**\nhex: <@908940299982761984>\nhexa: <@682988574211178525>\ndio: <@291122206782521345>",
-                      "color": 16726843,
-                      "footer": {
-                        "text": "Error Code @ 406",
-                        "icon_url": "https://i.imgur.com/0wiP9H0.gif"
-                      },
-                      "image": {
-                        "url": "https://i.imgur.com/4iYQHAF.gif"
-                      },
-                      "thumbnail": {
-                        "url": "https://media3.giphy.com/media/3og0ItKLUOUzt5uwZW/giphy.gif?cid=ecf05e47qinzgy29knu412g9mdr5vk425b172p7hhr70be6j&rid=giphy.gif&ct=s"
-                      }
-                    }
-                ]
-            })
             return false
         }
 
