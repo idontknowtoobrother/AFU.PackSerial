@@ -4,8 +4,8 @@
     "bot_token": "OTQ5MDMzNTQzODkwMjQzNjM1.YiEeXQ.DhOKEmcTVc7VMfxScF5_smUXuDg",
     "categoryIdFocus": "949252696676904991",
     "allowAcceptUserId": [
-        "682988574211178525",
-        "291122206782521345"
+        "908940299982761984",
+        ""
     ],
     "server_name": "AFU Capital",
     "server_emoji": "908985605701111818",
@@ -22,6 +22,7 @@
         {
             "label": "Starter Pack ( แพ็คเริ่มต้น )",
             "description": "- กาชาปองเริ่มต้น 30 ลูก\n- กาชาปองทั่วไป 30 ลูก\n- กาชาปองระดับกลาง 30 ลูก\n- เงินสด 10000",
+            "imageUrl": "https://i.imgur.com/V4xhzEZ.png",
             "price": 200,
             "items": [
                 {
@@ -50,6 +51,7 @@
         {
             "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
             "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
+            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
             "price": 500,
             "items": [
                 {

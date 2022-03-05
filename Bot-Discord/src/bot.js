@@ -16,6 +16,7 @@ const hex_brain = {
     status : null,
     packsSelectList : [],
     packInfomationList : [],
+    buyerList : {},
     _selledCount : 0,
     bridge : mysql.createPool(config.server_database),
     // Bot Init
@@ -158,61 +159,111 @@ const hex_brain = {
         return packs
     },
     initSerialSendInformation : function(packBuyer) {
-        var embeds = [
-            {
-                "description": "**รายละเอียดของที่จะได้รับเมื่อเติมโค้ด**",
-                "color": 9328895,
-                "fields": []
-            },
-            {
-                "description": `**Serial Code (  โค้ด )**\n||**\`${packBuyer.serial_code}\`**||\n\nขอบคุณ <@${packBuyer.id}> ที่สนับสนุน **${config.server_name}**`,
-                "color": 16735883
-            }
-        ]
-    
-        for(let i = 0; i < packBuyer.packs.length; i++){
-            const pack = packBuyer.packs[i]
-            embeds[0].fields.push({
-                name: `${pack.label} @ ${pack.price} บาท`,
-                value: `\`\`\`${pack.description}\`\`\``
+        var embeds = []
+        packBuyer.packs.forEach(prod=>{
+            const pack = config.package[prod.index]
+            embeds.push({
+                image: {
+                    url: pack.imageUrl
+                },
+                fields: {
+                    name: `${pack.label} @ ${pack.price} บาท`,
+                    value: `\`\`\`${pack.description}\`\`\`\n**จำนวน : ${prod.total}**`
+                }
             })
-        }
+        })
+
+        embeds.push({
+            "description": `**Serial Code (  โค้ด )**\n||**\`${packBuyer.serial_code}\`**||\n\nขอบคุณ <@${packBuyer.id}> ที่สนับสนุน **${config.server_name}**`,
+            "color": 16735883
+        })
     
         return embeds
     
     },
-    initInformationBuy : function(userId, values) {
-        var embeds = [ 
-            {
-                "description": `**รายละเอียดการซื้อของใน ${config.server_name}**\n\`Discord:\` <@${userId}>`,
-                "color": 9328895,
-                "fields": []
-            },
-            {
-                "title": "**โอนเงินตามช่องทางด้านล่าง และ รอการยืนยัน**",
-                "color": 7470522,
-                "image": {
-                  "url": config.transInfoImg
-                }
-            }
-        ]
-    
-        var total = 0
+    initInformationBuy : function(userId, values, interaction) {
+
+        this.buyerList[userId] = {
+            channelId: interaction.channel.id,
+            selectedItems: []
+        }
+        var msgs = []
+        var totalPrice = 0
         for(let i = 0; i < values.length; i++){
             const pack = config.package[values[i]]
-            total += pack.price
-            embeds[0].fields.push({
-                name: `${pack.label} @ ${pack.price}`,
-                value: `\`\`\`${pack.description}\`\`\``
+
+            this.buyerList[userId].selectedItems.push({
+                index: i,
+                total: 1
             })
+
+            const increaseAndDecreaseProduct = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId(`increase-${userId}-${i}`)
+                    .setEmoji('➕')
+					.setStyle('SUCCESS')
+			)
+            .addComponents(
+				new MessageButton()
+					.setCustomId(`decrease-${userId}-${i}`)
+                    .setEmoji('➖')
+					.setStyle('DANGER')
+			);
+
+
+            const msgProduct = {
+                username: `${config.server_name} Donation`,
+                embeds: [
+                    {
+                        "color": 9328895,
+                        "fields": [
+                            {
+                                "name": `${pack.label}`,
+                                "value": `\`\`\`${pack.description}\`\`\``
+                            },
+                            {
+                                "name": "รายละเอียดสินค้า",
+                                "value": `จำนวน: **\`${1}\`** ราคารวม: **\`${pack.price}\`** บาท`
+                            }
+                        ],
+                        "image": {
+                            "url": pack.imageUrl
+                        }
+                    }
+                ],
+                components: [increaseAndDecreaseProduct]
+            }
+            totalPrice+= pack.price
+            msgs.push(msgProduct)
         }
-        embeds[0].fields.push({
-            name: `**ราคารวมทั้งสิ้น ${total} บาท**`,
-            value: `ขอบคุณที่สนับสนุน ${config.server_name}`
+       
+        console.log(this.buyerList)
+
+        const w8transAndConfirm = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setCustomId(`sendBill-${userId}`)
+                .setEmoji(config.server_emoji)
+                .setLabel('ยืนยันการเลือกสินค้า')
+                .setStyle('SUCCESS')
+        )
+
+        msgs.forEach(msg=>{
+            interaction.channel.send(msg)
         })
-    
-        return embeds
-        
+        interaction.channel.send({
+            username: `${config.server_name} Donation`,
+            embeds: [
+                {
+                    "title": `**ราคารวมทั้งสิ้น: ${totalPrice} บาท**`,
+                    "color": 7470522,
+                    "description": `**Discord:** <@${userId}>\n**หากเลือกสินค้าและจำนวนเรียบร้อยแล้วกดปุ่มด้านล่าง**`,
+                }
+            ],
+            components: [w8transAndConfirm]
+        })
+
     },
     initIdentityInteraction : function(userId, values) {
         var strIden = `conf-${userId}-`
@@ -232,16 +283,6 @@ const hex_brain = {
             this.packsSelectList.push(data)
         }
     },
-    initPacksInformation : function(){
-        for(let i = 0; i < config.package.length; i++){
-            const pack = config.package[i]
-            const data = {
-                name: `${pack.label} @ ${pack.price} บาท`,
-            value: `\`\`\`${pack.description}\`\`\``,
-            }
-            this.packInfomationList.push(data)
-        }
-    },
     isFocusCategory : function(cateId){
         return cateId == config.categoryIdFocus
     },
@@ -251,11 +292,32 @@ const hex_brain = {
     deleteAllExceptMe : function(channel){
         channel.parent.children.each((ch) => {
             if (ch.id != channel.id) {
-                ch.delete()
+                ch.delete().then().catch()
             }
         })
     },
     sendPackInteraction : function(channel){
+
+        for(let i = 0; i < config.package.length; i++){
+            const pack = config.package[i]
+            channel.send({
+                embeds: [
+                    {
+                        "fields": [
+                            {
+                                name: `${pack.label} @ ${pack.price} บาท`,
+                                value: `\`\`\`${pack.description}\`\`\``
+                            }
+                        ],
+                        "image": {
+                            "url": pack.imageUrl
+                        }
+                    }
+                ],
+                components: []
+            })
+        }
+
         const packSelectMenu = new MessageActionRow()
         .addComponents(
             new MessageSelectMenu()
@@ -265,19 +327,18 @@ const hex_brain = {
                 .setMinValues(1)
                 .setMaxValues(this.packsSelectList.length)
         )
-        
         channel.send({ 
-    
-            username: `${config.server_name} Donation`,
             embeds: [
                 {
-                    "color": 9328895,
-                    "fields": this.packInfomationList,
-                    "image": {
-                        "url": config.logo_server
-                    },
+                    "color": '98e363',
+                    "fields": [
+                        {
+                            name: `เลือกซื้อสินค้าใน ${config.server_name}`,
+                            value: `หลังจากซื้อสินค้าจะได้รับ Serial Code นำไปกรอกในประเทศได้`
+                        }
+                    ],
                     "footer": {
-                        "text": "Borned @ AFU Developer Squad"
+                        "text": "@ Develop by Hex and Document by Dio"
                     }
                 }
             ],
@@ -285,6 +346,158 @@ const hex_brain = {
         }).then(()=>{
             this.dbg(`${channel.id}:${channel.name} Staring buy product ...`)
         }).catch(console.log)
+    },
+    increaseProduct : function(data){
+        // data = [ 'userId', 'indexP']
+        var buyerData = this.buyerList[data[0]]
+        if( buyerData == undefined || buyerData == null)return false;
+        
+        var returnPack = false
+
+        this.buyerList[data[0]].selectedItems.forEach(product =>{
+            if(product.index == data[1]){
+                product.total++
+                returnPack = product
+                return
+            }
+        })
+
+        return returnPack
+    },
+    decreaseProduct : function(data){
+        // data = [ 'userId', 'indexP']
+        var buyerData = this.buyerList[data[0]]
+        if( buyerData == undefined || buyerData == null)return false;
+        
+        var returnPack = false
+
+
+        this.buyerList[data[0]].selectedItems.forEach(product =>{
+            if(product.index == data[1]){
+                product.total = product.total - 1 < 1 ? 1 : product.total - 1;
+                returnPack = product
+                return
+            }
+        })
+
+        return returnPack
+    },
+    refreshInteractionManage : function(interaction, packUpdated, dataIncrease, cb){
+        if(packUpdated){
+            const pack = config.package[dataIncrease[1]]
+            interaction.message.edit({
+                embeds: [
+                    {
+                        "color": 9328895,
+                        "fields": [
+                            {
+                                "name": `${pack.label}`,
+                                "value": `\`\`\`${pack.description}\`\`\``
+                            },
+                            {
+                                "name": "รายละเอียดสินค้า",
+                                "value": `จำนวน: **\`${packUpdated.total}\`** ราคารวม: **\`${pack.price * packUpdated.total}\`** บาท`
+                            }
+                        ],
+                        "image": {
+                            "url": pack.imageUrl
+                        }
+                    }
+                ]
+            })
+            cb(dataIncrease[0], hex_brain.buyerList[dataIncrease[0]], interaction)
+        }
+    },
+    updateBillInfo : function(userId, dataUpadate, interaction){
+        var totalPrice = 0
+
+        const w8transAndConfirm = new MessageActionRow()
+            .addComponents(
+                new MessageButton()
+                    .setCustomId(`sendBill-${userId}`)
+                    .setEmoji(config.server_emoji)
+                    .setLabel('ยืนยันการเลือกสินค้า')
+                    .setStyle('SUCCESS')
+        )
+
+
+        dataUpadate.selectedItems.forEach(data=>{
+            const pack = config.package[data.index]
+            totalPrice += (pack.price * data.total)
+        })
+
+
+        interaction.channel.bulkDelete(1).then(()=>{
+
+            interaction.channel.send({
+                username: `${config.server_name} Donation`,
+                embeds: [
+                    {
+                        "title": `**ราคารวมทั้งสิ้น: ${totalPrice} บาท**`,
+                        "color": 7470522,
+                        "description": `**Discord:** <@${userId}>\n**หากเลือกสินค้าและจำนวนเรียบร้อยแล้วกดปุ่มด้านล่าง**`,
+                    }
+                ],
+                components: [w8transAndConfirm]
+            })
+            interaction.deferUpdate()
+
+        }).catch()
+    },
+    lastStepInteract : function(interaction, userId){
+
+        var infomationBuy = []
+    
+        var total = 0
+        var userBuyData = this.buyerList[userId]
+        userBuyData.selectedItems.forEach(pack=>{
+            const prod = config.package[pack.index]
+            total += (prod.price*pack.total)
+            infomationBuy.push({
+                image: {
+                    url: prod.imageUrl
+                },
+                fields: {
+                    name: `${prod.label} @ ${prod.price} บาท`,
+                    value: `\`\`\`${prod.description}\`\`\`\n**จำนวน : ${pack.total}**`
+                }
+            })
+        })
+
+        infomationBuy.push({
+            "title": `**ราคารวมทั้งสิ้น ${total} บาท**`,
+            "color": 7470522,
+            "fields" : {
+                name: `**โอนเงินตามช่องทางด้านล่าง และ รอการยืนยัน**\n`,
+                value: `ขอบคุณ <@${userId}> ที่สนับสนุน ${config.server_name}`
+            },
+            "image": {
+              "url": config.transInfoImg
+            }
+        })
+    
+        const w8transAndConfirm = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setCustomId(`conf-${userId}`)
+                .setEmoji(config.server_emoji)
+                .setLabel('กรุณารอ ..')
+                .setStyle('SUCCESS')
+        )
+        
+        interaction.channel.send({
+            username: `${config.server_name} Donation`,
+            embeds: infomationBuy,
+            components: [w8transAndConfirm]
+        })
+
+    },
+    deleteChannelBuyerList : function(channel){
+        for (const key in hex_brain.buyerList) {
+            if(channel.id == hex_brain.buyerList[key].channelId){
+                channel.delete().then().catch()
+            }
+        }
     }
 
 }
@@ -294,28 +507,56 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
     // check access
     if(!hex_brain.isAccess(interaction.channel))return;
 
+    // send bill
+    if(interaction.customId.includes('sendBill-')){
+        var subId = interaction.customId.substring(9, interaction.customId.length)
+        const buyerData = hex_brain.buyerList[subId]
+        if(!buyerData || interaction.user.id != subId){
+            interaction.deferUpdate()
+            return
+        }
+        interaction.channel.bulkDelete(buyerData.selectedItems.length+1).then(()=>{
+            hex_brain.lastStepInteract(interaction, subId)
+
+
+        }).catch()
+    }
+
+    // increase product
+    if(interaction.customId.includes('increase-')){
+        var subId = interaction.customId.substring(9, interaction.customId.length)
+        var dataIncrease =  subId.split('-')// userId i 
+        dataIncrease[1] = parseInt(dataIncrease[1]) 
+        const packUpdated = hex_brain.increaseProduct(dataIncrease)
+        hex_brain.refreshInteractionManage(interaction, packUpdated, dataIncrease, hex_brain.updateBillInfo)
+    }
+
+    // decrease product
+    if(interaction.customId.includes('decrease-')){
+        var subId = interaction.customId.substring(9, interaction.customId.length)
+        var dataIncrease =  subId.split('-')// userId i 
+        dataIncrease[1] = parseInt(dataIncrease[1]) 
+        const packUpdated = hex_brain.decreaseProduct(dataIncrease)
+        hex_brain.refreshInteractionManage(interaction, packUpdated, dataIncrease, hex_brain.updateBillInfo)
+    }
+
     // packs-select
     if(interaction.customId == 'packs-select'){
         var userId = interaction.user.id
+        
+        if(hex_brain.buyerList[userId]){
+            interaction.reply(`ยังมีห้องที่เปิดการซื้อขายของ <@${userId}> อยู่นะครับ\n\n**ห้องจะถูกลบใน 5 วินาที**`)
+            setTimeout(()=>{
+                interaction.channel.delete().then().catch()
+            },5000)
+            return
+        }
+        
         var userPackValues = interaction.values
-        var userIdentityInteraction = hex_brain.initIdentityInteraction(userId, userPackValues)
-        console.log(userIdentityInteraction.split('-'))
         
-        const infomationBuy = hex_brain.initInformationBuy(userId, userPackValues)
-        const w8transAndConfirm = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setCustomId(userIdentityInteraction)
-                .setEmoji(config.server_emoji)
-                .setLabel('กรุณารอ..')
-                .setStyle('SUCCESS')
-        )
-        
-        interaction.message.delete()
-        interaction.channel.send({
-            username: `${config.server_name} Donation`,
-            embeds: infomationBuy,
-            components: [w8transAndConfirm]
+
+        interaction.channel.bulkDelete(config.package.length+1).then(()=>{
+            hex_brain.initInformationBuy(userId, userPackValues, interaction)
         })
         return
     }
@@ -338,49 +579,67 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
         if (hex_brain._selledCount>2){
             hex_brain.requestBotAccess()
             if(!hex_brain.isAccess(interaction.channel)){
-                interaction.message.delete()
+                interaction.message.delete().then().catch()
             };
         }
         hex_brain._selledCount = hex_brain._selledCount + 1 > 3 ? 0 : hex_brain._selledCount + 1
 
-        var subIden = interaction.customId.substring(5, interaction.customId.length)    
-        var packDetail = subIden.split('-')
+        var subIden = interaction.customId.substring(5, interaction.customId.length)
+        
+        console.log(`\'${subIden}\'`)
+
+        const userData = hex_brain.buyerList[subIden]
+        console.log(userData)
+        
         var packBuyer = {
-            id: packDetail[0],
+            id: interaction.user.id,
             serial_code: hex_brain.generateSerialCode(interaction.channel),
-            packs: hex_brain.getPacks(packDetail[1].split(','))
+            packs: userData.selectedItems
         }
 
         const confInformation = hex_brain.initSerialSendInformation(packBuyer)
 
         var packQueryData = []
         packBuyer.packs.forEach(pack => {
-            packQueryData.push({
-                label: pack.label,
-                items: pack.items
-            })
+            const prod = config.package[pack.index]
+            for(var i =0; i < pack.total; i++){
+                packQueryData.push({
+                    label: prod.label,
+                    items: prod.items
+                })
+            }
         })
         
         const pack_data = JSON.stringify(packQueryData)
-
         hex_brain.bridge.query(`INSERT INTO pack_serial (serial_code, pack_data) VALUES ('${packBuyer.serial_code}', '${pack_data}')`,(err, res, fs)=> {
             if(!res)return;
+            delete hex_brain.buyerList[packBuyer.id]
             console.log(`\n\n[ Buy Successfully '${packBuyer.id}' ]\n   Code::> ${packBuyer.serial_code}\n   Res::> ${res}\n   Packs::> ${pack_data}`)
-            interaction.message.delete()
+            interaction.message.delete().then().catch()
             interaction.channel.send({
                 embeds: confInformation
             })
+            
             interaction.channel.setName("✅")
             .catch(console.error);
         })
+        
         
         return
     }
 
 })
 
+
+hex_brain.bot.on('channelDelete', (channel)=>{
+    if (!hex_brain.isFocusCategory(channel.parentId)) {
+        console.log('not in focus category');
+        return
+    }
+    hex_brain.deleteChannelBuyerList(channel)
+})
+
 hex_brain.bot.on('channelCreate', (channel) => {
-    console.log(channel);
     if (!hex_brain.isFocusCategory(channel.parentId)) {
         console.log('not in focus category');
         return
@@ -403,6 +662,5 @@ hex_brain.bot.on('ready', () => {
     hex_brain.requestBotAccess()
 })
 
-hex_brain.initPacksInformation()
 hex_brain.initPacksSelectMenu()
 hex_brain.bot.login(config.bot_token)
