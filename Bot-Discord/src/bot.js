@@ -38,23 +38,7 @@ const hex_brain = {
         return this.isSuccess
     },
     isAccess: function(channel){
-
-        // invalid token
-        if(this.isSuccess === 'accessDenined'){
-            return false
-        }
-
-        // expired
-        if(this.isSuccess === 'expired'){
-            return false
-        }
-
-        // another address
-        if(this.isSuccess === 'anotherAddress'){
-            return false
-        }
-
-        return true
+        return this.isSuccess
     },
     dbg: (/* */) => {
         if(!config.devMode)return;
@@ -330,18 +314,9 @@ const hex_brain = {
             if(!this.status)return;
             this.status.dayLeft = parseInt(this.status.dayLeft)
             if(this.status.state === 'actived' && (this.status.dayLeft > 0 || this.status.dayLeft == -1)){
-                this.isSuccess = 'access'
+                this.isSuccess = true
                 console.log(`${this.tag}\n${this.tagStatus} Access Bot \x1b[32m:D\x1b[0m\n${this.userDiscordId} ${this.status.name}\n${this.tagIp} ${this.status.a}\n${this.tagDay} \x1b[32m${this.status.dayLeft}\x1b[0m`)
                 console.log('\n\x1b[42m\x1b[37m Bot Status \x1b[0m Bot Donate Online \x1b[32m:D\x1b[0m')
-            }else if(this.status.state === 'actived' && this.status.dayLeft < 1){
-                this.isSuccess = 'expired'
-                console.log(`${this.tag} Expired \x1b[31m:(\x1b[0m`)
-            }else if(this.status.state === 'activing'){
-                this.isSuccess = 'anotherAddress'
-                console.log(`${this.tag} IP Address Invalid \x1b[31m:(\x1b[0m`)
-            }else if(this.status.state === 'notfound'){
-                this.isSuccess = 'accessDenined'
-                console.log(`${this.tag} Access Denined \x1b[31m:(\x1b[0m`)
             }
         }).catch(console.log)
 
