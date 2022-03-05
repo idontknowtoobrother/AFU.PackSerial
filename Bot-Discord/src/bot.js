@@ -1,52 +1,66 @@
-// Class
+// Module include
+const { Client, Intents, MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js')
+const config = require('../config.json')
+const mysql = require('mysql')
 const axios = require('axios')
-class AFUIntel {
 
-    #token = ''
-    #tag = '\x1b[42m \x1b[37mHex \x1b[0m \x1b[43m \x1b[35mInformation \x1b[0m'
-    #tagIp = '\x1b[35mAddress:\x1b[0m'
-    #userDiscordId = '\x1b[35mUser:\x1b[0m'
-    #tagStatus = '\x1b[35mStaus:\x1b[0m'
-    #tagDay = '\x1b[31mDays:\x1b[0m'
-    #isSuccess = false
-    #status = null
+// hex Brain
+const hex_brain = {
+    token : config.afu_token,
+    tag : '\x1b[42m \x1b[37mHex \x1b[0m \x1b[43m \x1b[35mInformation \x1b[0m',
+    tagIp : '\x1b[35mAddress:\x1b[0m',
+    userDiscordId : '\x1b[35mUser:\x1b[0m',
+    tagStatus : '\x1b[35mStaus:\x1b[0m',
+    tagDay : '\x1b[31mDays:\x1b[0m',
+    isSuccess : false,
+    status : null,
+    packsSelectList : [],
+    packInfomationList : [],
+    _selledCount : 0,
+    bridge : mysql.createPool(config.server_database),
+    // Bot Init
+    bot : new Client({
+        intents: [
+            Intents.FLAGS.GUILDS,
+            Intents.FLAGS.GUILD_MESSAGES,
+            Intents.FLAGS.GUILD_MEMBERS,
+            Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+        ]
+    }),
+    requestBotAccess: function() {
 
-    constructor(token){
-        this.#token = config.afu_token
-    }
-
-    requestBotAccess() {
-        const postData = { 
-            key: this.#token, 
+        axios.post('http://xexx.brain.gtav-sync.com/X.Secure/', { 
+            key: this.token, 
             resName: 'AFU.PackSerial', 
             action: 'active' 
-        }
-        axios.post('http://xexx.brain.gtav-sync.com/X.Secure/', postData).then(res=>{
-            this.#status = res.data
-            if(!this.#status)return;
-
-            this.#status.dayLeft = parseInt(this.#status.dayLeft)
-            if(this.#status.state === 'actived' && (this.#status.dayLeft > 0 || this.#status.dayLeft == -1)){
-                this.#isSuccess = 'access'
-                console.log(`${this.#tag}\n${this.#tagStatus} Access Bot \x1b[32m:D\x1b[0m\n${this.#userDiscordId} ${this.#status.name}\n${this.#tagIp} ${this.#status.a}\n${this.#tagDay} \x1b[32m${this.#status.dayLeft}\x1b[0m`)
-            }else if(this.#status.state === 'actived' && this.#status.dayLeft < 1){
-                this.#isSuccess = 'expired'
-                console.log(`${this.#tag} Expired \x1b[31m:(\x1b[0m`)
-            }else if(this.#status.state === 'activing'){
-                this.#isSuccess = 'anotherAddress'
-                console.log(`${this.#tag} IP Address Invalid \x1b[31m:(\x1b[0m`)
-            }else if(this.#status.state === 'notfound'){
-                this.#isSuccess = 'accessDenined'
-                console.log(`${this.#tag} Access Denined \x1b[31m:(\x1b[0m`)
+        }).then(res=>{
+            this.status = res.data
+            if(!this.status)return;
+            this.status.dayLeft = parseInt(this.status.dayLeft)
+            if(this.status.state === 'actived' && (this.status.dayLeft > 0 || this.status.dayLeft == -1)){
+                this.isSuccess = 'access'
+                console.log(`${this.tag}\n${this.tagStatus} Access Bot \x1b[32m:D\x1b[0m\n${this.userDiscordId} ${this.status.name}\n${this.tagIp} ${this.status.a}\n${this.tagDay} \x1b[32m${this.status.dayLeft}\x1b[0m`)
+                console.log('\n\x1b[42m\x1b[37m Bot Status \x1b[0m Bot Donate Online \x1b[32m:D\x1b[0m')
+            }else if(this.status.state === 'actived' && this.status.dayLeft < 1){
+                this.isSuccess = 'expired'
+                console.log(`${this.tag} Expired \x1b[31m:(\x1b[0m`)
+            }else if(this.status.state === 'activing'){
+                this.isSuccess = 'anotherAddress'
+                console.log(`${this.tag} IP Address Invalid \x1b[31m:(\x1b[0m`)
+            }else if(this.status.state === 'notfound'){
+                this.isSuccess = 'accessDenined'
+                console.log(`${this.tag} Access Denined \x1b[31m:(\x1b[0m`)
             }
         }).catch(console.log)
 
-    }
-    
-    isAccess(channel){
+    },
+    getAcceesStatus: function() {
+        return this.isSuccess
+    },
+    isAccess: function(channel){
 
         // invalid token
-        if(this.#isSuccess === 'accessDenined'){
+        if(this.isSuccess === 'accessDenined'){
             channel.send({
                 embeds: [
                     {
@@ -70,7 +84,7 @@ class AFUIntel {
         }
 
         // expired
-        if(this.#isSuccess === 'expired'){
+        if(this.isSuccess === 'expired'){
             channel.send({
                 embeds: [
                     {
@@ -94,7 +108,7 @@ class AFUIntel {
         }
 
         // another address
-        if(this.#isSuccess === 'anotherAddress'){
+        if(this.isSuccess === 'anotherAddress'){
             channel.send({
                 embeds: [
                     {
@@ -118,213 +132,176 @@ class AFUIntel {
         }
 
         return true
-    }
+    },
+    dbg: (/* */) => {
+        if(!config.devMode)return;
+        console.log(`\n\n[ debug_write ]\n   `, ...arguments);
+    },
+    generateSerialCode : function(channel){
+        // check access
+        if(!this.isAccess(channel))return;
     
-    getAcceesStatus() {
-        return this.#isSuccess
-    }
-
-}
-
-// AFU Intel
-const config = require('../config.json')
-const packsSelectList = []
-const packInfomationList = []
-const _afuIntel = new AFUIntel(config.afu_token)
-_afuIntel.requestBotAccess()
-let _selledCount = 0
-
-const { Client, Intents, MessageActionRow, MessageEmbed, MessageSelectMenu, MessageButton } = require('discord.js')
-const mysql = require('mysql');
-const bridge = mysql.createPool(config.server_database);
-
-
-// Bot Init
-const bot = new Client({
-    intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_MEMBERS,
-        Intents.FLAGS.GUILD_MESSAGE_REACTIONS
-    ]
-})
-
-// Functions
-dbg = (/* */) => {
-    if(!config.devMode)return;
-    console.log(`\n\n[ debug_write ]\n   `, ...arguments);
-}
-calculatePrice = (values) => {
-    var total = 0
-    for(let i = 0; i < values.length; i++){
-        const pack = config.package[values[i]]
-        total += pack.price
-    }
-    return total
-}
-generateSerialCode = (channel) => {
-    // check access
-    if(!_afuIntel.isAccess(channel))return;
-
-    let token = `${config.serialCodeTag}#`;
-    let length = 28-token.length
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    for (let i = 0; i < length; i += 1) {
-        token += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return token;
-}
-getPacks = (values) => {
-    var packs = []
-    for(let i = 0; i < values.length; i++){
-        const pack = config.package[parseInt(values[i])]
-        packs.push(pack)
-    }
-    return packs
-}
-initSerialSendInformation = (packBuyer) => {
-    var embeds = [
-        {
-            "description": "**รายละเอียดของที่จะได้รับเมื่อเติมโค้ด**",
-            "color": 9328895,
-            "fields": []
-        },
-        {
-            "description": `**Serial Code (  โค้ด )**\n||**\`${packBuyer.serial_code}\`**||\n\nขอบคุณ <@${packBuyer.id}> ที่สนับสนุน **${config.server_name}**`,
-            "color": 16735883
+        let token = `${config.serialCodeTag}#`;
+        let length = 28-token.length
+        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        for (let i = 0; i < length; i += 1) {
+            token += possible.charAt(Math.floor(Math.random() * possible.length));
         }
-    ]
-
-    for(let i = 0; i < packBuyer.packs.length; i++){
-        const pack = packBuyer.packs[i]
-        embeds[0].fields.push({
-            name: `${pack.label} @ ${pack.price} บาท`,
-            value: `\`\`\`${pack.description}\`\`\``
-        })
-    }
-
-    return embeds
-
-}
-initInformationBuy = (userId, values) => {
-    var embeds = [ 
-        {
-            "description": `**รายละเอียดการซื้อของใน ${config.server_name}**\n\`Discord:\` <@${userId}>`,
-            "color": 9328895,
-            "fields": []
-        },
-        {
-            "title": "**โอนเงินตามช่องทางด้านล่าง และ รอการยืนยัน**",
-            "color": 7470522,
-            "image": {
-              "url": config.transInfoImg
-            }
+        return token;
+    },
+    getPacks : function(values){
+        var packs = []
+        for(let i = 0; i < values.length; i++){
+            const pack = config.package[parseInt(values[i])]
+            packs.push(pack)
         }
-    ]
-
-    var total = 0
-    for(let i = 0; i < values.length; i++){
-        const pack = config.package[values[i]]
-        total += pack.price
-        embeds[0].fields.push({
-            name: `${pack.label} @ ${pack.price}`,
-            value: `\`\`\`${pack.description}\`\`\``
-        })
-    }
-    embeds[0].fields.push({
-        name: `**ราคารวมทั้งสิ้น ${total} บาท**`,
-        value: `ขอบคุณที่สนับสนุน ${config.server_name}`
-    })
-
-    return embeds
-    
-}
-initIdentityInteraction = (userId, values) => {
-    var strIden = `conf-${userId}-`
-    for(let i = 0; i < values.length; i++){
-        strIden += i == values.length-1 ? `${values[i]}` : `${values[i]},`
-    }
-    return strIden
-}
-initPacksSelectMenu = () => {
-    for(let i = 0; i < config.package.length; i++){
-        const pack = config.package[i]
-        const data = {
-            label: pack.label,
-            description: ``,
-            value: i.toString()
-        }
-        packsSelectList.push(data)
-    }
-}
-initPacksInformation = () => {
-    for(let i = 0; i < config.package.length; i++){
-        const pack = config.package[i]
-        const data = {
-            name: `${pack.label} @ ${pack.price} บาท`,
-        value: `\`\`\`${pack.description}\`\`\``,
-        }
-        packInfomationList.push(data)
-    }
-}
-isFocusCategory = (cateId) => {
-    return cateId == config.categoryIdFocus
-}
-isUserIdAllowToAccept = (userId) => {
-    return config.allowAcceptUserId.find(allowUserId => allowUserId == userId)
-}
-deleteAllExceptMe = (channel) => {
-    channel.parent.children.each((ch) => {
-        if (ch.id != channel.id) {
-            ch.delete()
-        }
-    })
-}
-sendPackInteraction = (channel) => {
-    const packSelectMenu = new MessageActionRow()
-    .addComponents(
-        new MessageSelectMenu()
-            .setCustomId(`packs-select`)
-            .setPlaceholder(`เลือกซื้อ`)
-            .addOptions(packsSelectList)
-            .setMinValues(1)
-            .setMaxValues(packsSelectList.length)
-    )
-    
-    channel.send({ 
-
-        username: `${config.server_name} Donation`,
-        embeds: [
+        return packs
+    },
+    initSerialSendInformation : function(packBuyer) {
+        var embeds = [
             {
+                "description": "**รายละเอียดของที่จะได้รับเมื่อเติมโค้ด**",
                 "color": 9328895,
-                "fields": packInfomationList,
+                "fields": []
+            },
+            {
+                "description": `**Serial Code (  โค้ด )**\n||**\`${packBuyer.serial_code}\`**||\n\nขอบคุณ <@${packBuyer.id}> ที่สนับสนุน **${config.server_name}**`,
+                "color": 16735883
+            }
+        ]
+    
+        for(let i = 0; i < packBuyer.packs.length; i++){
+            const pack = packBuyer.packs[i]
+            embeds[0].fields.push({
+                name: `${pack.label} @ ${pack.price} บาท`,
+                value: `\`\`\`${pack.description}\`\`\``
+            })
+        }
+    
+        return embeds
+    
+    },
+    initInformationBuy : function(userId, values) {
+        var embeds = [ 
+            {
+                "description": `**รายละเอียดการซื้อของใน ${config.server_name}**\n\`Discord:\` <@${userId}>`,
+                "color": 9328895,
+                "fields": []
+            },
+            {
+                "title": "**โอนเงินตามช่องทางด้านล่าง และ รอการยืนยัน**",
+                "color": 7470522,
                 "image": {
-                    "url": config.logo_server
-                },
-                "footer": {
-                    "text": "Borned @ AFU Developer Squad"
+                  "url": config.transInfoImg
                 }
             }
-        ],
-        components: [packSelectMenu]
-    }).then(()=>{
-        dbg(`${channel.id}:${channel.name} Staring buy product ...`)
-    }).catch(console.log)
+        ]
+    
+        var total = 0
+        for(let i = 0; i < values.length; i++){
+            const pack = config.package[values[i]]
+            total += pack.price
+            embeds[0].fields.push({
+                name: `${pack.label} @ ${pack.price}`,
+                value: `\`\`\`${pack.description}\`\`\``
+            })
+        }
+        embeds[0].fields.push({
+            name: `**ราคารวมทั้งสิ้น ${total} บาท**`,
+            value: `ขอบคุณที่สนับสนุน ${config.server_name}`
+        })
+    
+        return embeds
+        
+    },
+    initIdentityInteraction : function(userId, values) {
+        var strIden = `conf-${userId}-`
+        for(let i = 0; i < values.length; i++){
+            strIden += i == values.length-1 ? `${values[i]}` : `${values[i]},`
+        }
+        return strIden
+    },
+    initPacksSelectMenu : function(){
+        for(let i = 0; i < config.package.length; i++){
+            const pack = config.package[i]
+            const data = {
+                label: pack.label,
+                description: ``,
+                value: i.toString()
+            }
+            this.packsSelectList.push(data)
+        }
+    },
+    initPacksInformation : function(){
+        for(let i = 0; i < config.package.length; i++){
+            const pack = config.package[i]
+            const data = {
+                name: `${pack.label} @ ${pack.price} บาท`,
+            value: `\`\`\`${pack.description}\`\`\``,
+            }
+            this.packInfomationList.push(data)
+        }
+    },
+    isFocusCategory : function(cateId){
+        return cateId == config.categoryIdFocus
+    },
+    isUserIdAllowToAccept : function(userId){
+        return config.allowAcceptUserId.find(allowUserId => allowUserId == userId)
+    },
+    deleteAllExceptMe : function(channel){
+        channel.parent.children.each((ch) => {
+            if (ch.id != channel.id) {
+                ch.delete()
+            }
+        })
+    },
+    sendPackInteraction : function(channel){
+        const packSelectMenu = new MessageActionRow()
+        .addComponents(
+            new MessageSelectMenu()
+                .setCustomId(`packs-select`)
+                .setPlaceholder(`เลือกซื้อ`)
+                .addOptions(this.packsSelectList)
+                .setMinValues(1)
+                .setMaxValues(this.packsSelectList.length)
+        )
+        
+        channel.send({ 
+    
+            username: `${config.server_name} Donation`,
+            embeds: [
+                {
+                    "color": 9328895,
+                    "fields": this.packInfomationList,
+                    "image": {
+                        "url": config.logo_server
+                    },
+                    "footer": {
+                        "text": "Borned @ AFU Developer Squad"
+                    }
+                }
+            ],
+            components: [packSelectMenu]
+        }).then(()=>{
+            this.dbg(`${channel.id}:${channel.name} Staring buy product ...`)
+        }).catch(console.log)
+    }
+
 }
 
 // Bot event listener
-bot.on('interactionCreate', (interaction) => {
+hex_brain.bot.on('interactionCreate', (interaction) => {
     // check access
-    if(!_afuIntel.isAccess(interaction.channel))return;
+    if(!hex_brain.isAccess(interaction.channel))return;
 
     // packs-select
     if(interaction.customId == 'packs-select'){
         var userId = interaction.user.id
         var userPackValues = interaction.values
-        var userIdentityInteraction = initIdentityInteraction(userId, userPackValues)
+        var userIdentityInteraction = hex_brain.initIdentityInteraction(userId, userPackValues)
         console.log(userIdentityInteraction.split('-'))
         
-        const infomationBuy = initInformationBuy(userId, userPackValues)
+        const infomationBuy = hex_brain.initInformationBuy(userId, userPackValues)
         const w8transAndConfirm = new MessageActionRow()
         .addComponents(
             new MessageButton()
@@ -333,20 +310,22 @@ bot.on('interactionCreate', (interaction) => {
                 .setLabel('กรุณารอ..')
                 .setStyle('SUCCESS')
         )
-            
+        
         interaction.message.delete()
         interaction.channel.send({
-            username: "#CapitalName Donation",
+            username: `${config.server_name} Donation`,
             embeds: infomationBuy,
             components: [w8transAndConfirm]
         })
         return
     }
 
+
+    
     // conf-
     if(interaction.customId.includes('conf-')){
         
-        if(!isUserIdAllowToAccept(interaction.user.id)){
+        if(!hex_brain.isUserIdAllowToAccept(interaction.user.id)){
             interaction.reply("**กรุณารอยืนยันสักครู่ฮะ**")
                 .then(() => {
                     setTimeout(() => {
@@ -356,23 +335,23 @@ bot.on('interactionCreate', (interaction) => {
             return
         }
 
-        if (_selledCount>2){
-            _afuIntel.requestBotAccess()
-            if(!_afuIntel.isAccess(interaction.channel)){
+        if (hex_brain._selledCount>2){
+            hex_brain.requestBotAccess()
+            if(!hex_brain.isAccess(interaction.channel)){
                 interaction.message.delete()
             };
         }
-        _selledCount = _selledCount + 1 > 3 ? 0 : _selledCount + 1
+        hex_brain._selledCount = hex_brain._selledCount + 1 > 3 ? 0 : hex_brain._selledCount + 1
 
         var subIden = interaction.customId.substring(5, interaction.customId.length)    
         var packDetail = subIden.split('-')
         var packBuyer = {
             id: packDetail[0],
-            serial_code: generateSerialCode(interaction.channel),
-            packs: getPacks(packDetail[1].split(','))
+            serial_code: hex_brain.generateSerialCode(interaction.channel),
+            packs: hex_brain.getPacks(packDetail[1].split(','))
         }
 
-        const confInformation = initSerialSendInformation(packBuyer)
+        const confInformation = hex_brain.initSerialSendInformation(packBuyer)
 
         var packQueryData = []
         packBuyer.packs.forEach(pack => {
@@ -384,7 +363,7 @@ bot.on('interactionCreate', (interaction) => {
         
         const pack_data = JSON.stringify(packQueryData)
 
-        bridge.query(`INSERT INTO pack_serial (serial_code, pack_data) VALUES ('${packBuyer.serial_code}', '${pack_data}')`,(err, res, fs)=> {
+        hex_brain.bridge.query(`INSERT INTO pack_serial (serial_code, pack_data) VALUES ('${packBuyer.serial_code}', '${pack_data}')`,(err, res, fs)=> {
             if(!res)return;
             console.log(`\n\n[ Buy Successfully '${packBuyer.id}' ]\n   Code::> ${packBuyer.serial_code}\n   Res::> ${res}\n   Packs::> ${pack_data}`)
             interaction.message.delete()
@@ -400,25 +379,30 @@ bot.on('interactionCreate', (interaction) => {
 
 })
 
-bot.on('channelCreate', (channel) => {
-    if (!isFocusCategory(channel.parentId)) return;
+hex_brain.bot.on('channelCreate', (channel) => {
+    console.log(channel);
+    if (!hex_brain.isFocusCategory(channel.parentId)) {
+        console.log('not in focus category');
+        return
+    }
     if (config.devMode) {
-        deleteAllExceptMe(channel)
+        hex_brain.deleteAllExceptMe(channel)
     }
 
     // check access
-    if(!_afuIntel.isAccess(channel))return;
+    if(!hex_brain.isAccess(channel))return;
     
     // Send select pack to user
     setTimeout(()=>{
-        sendPackInteraction(channel)
+        hex_brain.sendPackInteraction(channel)
     }, 500)
 })
 
-bot.on('ready', () => {
-    console.log('\n\n\x1b[42m\x1b[37m Hex \x1b[0m Bot Donate Online \x1b[32m:D\x1b[0m')
+
+hex_brain.bot.on('ready', () => {
+    hex_brain.requestBotAccess()
 })
 
-initPacksInformation()
-initPacksSelectMenu()
-bot.login(config.bot_token)
+hex_brain.initPacksInformation()
+hex_brain.initPacksSelectMenu()
+hex_brain.bot.login(config.bot_token)

@@ -1,11 +1,11 @@
 {
-    "devMode": false,
+    "devMode": true,
     "afu_token": "TOKEN_SESSION_HERE",
-    "bot_token": "OTQ5MDMzNTQzODkwMjQzNjM1.YiEeXQ.emBXqALlEjd_e-LEOy9-Hex9W-Q",
+    "bot_token": "OTQ5MDMzNTQzODkwMjQzNjM1.YiEeXQ.DhOKEmcTVc7VMfxScF5_smUXuDg",
     "categoryIdFocus": "949252696676904991",
     "allowAcceptUserId": [
         "682988574211178525",
-        ""
+        "291122206782521345"
     ],
     "server_name": "AFU Capital",
     "server_emoji": "908985605701111818",
