@@ -11,7 +11,7 @@ game 'gta5'
 
 author 'Hex ( keng#0110 )'
 description 'Ez Serial Code Topup with discord bot'
-version '1.0 Release'
+version '1.0 Try Harder Release'
 
 client_scripts {
     'Settings.lua',

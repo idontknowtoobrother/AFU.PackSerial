@@ -14,6 +14,8 @@ const hex_brain = {
     tagDay : '\x1b[31mDays:\x1b[0m',
     isSuccess : false,
     status : null,
+    packSelectMenu: null,
+    msgSelectMenu: null,
     packsSelectList : [],
     packInfomationList : [],
     buyerList : {},
@@ -123,18 +125,10 @@ const hex_brain = {
         }
         return token;
     },
-    getPacks : function(values){
-        var packs = []
-        for(let i = 0; i < values.length; i++){
-            const pack = config.package[parseInt(values[i])]
-            packs.push(pack)
-        }
-        return packs
-    },
     initSerialSendInformation : function(packBuyer) {
         var embeds = []
         packBuyer.packs.forEach(prod=>{
-            const pack = config.package[prod.index]
+            const pack = config.package[prod.configIndex]
             embeds.push({
                 image: {
                     url: pack.imageUrl
@@ -154,7 +148,7 @@ const hex_brain = {
         return embeds
     
     },
-    initInformationBuy : function(userId, values, interaction) {
+    initInformationBuy : async function(userId, values, interaction) {
 
         this.buyerList[userId] = {
             channelId: interaction.channel.id,
@@ -167,6 +161,7 @@ const hex_brain = {
 
             this.buyerList[userId].selectedItems.push({
                 index: i,
+                configIndex: values[i],
                 total: 1
             })
 
@@ -211,20 +206,10 @@ const hex_brain = {
             msgs.push(msgProduct)
         }
        
-        console.log(this.buyerList)
+        for(let i = 0; i < msgs.length; i++){
+            interaction.channel.send(msgs[i]) 
+        }
 
-        const w8transAndConfirm = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setCustomId(`sendBill-${userId}`)
-                .setEmoji(config.server_emoji)
-                .setLabel('ยืนยันการเลือกสินค้า')
-                .setStyle('SUCCESS')
-        )
-
-        msgs.forEach(msg=>{
-            interaction.channel.send(msg)
-        })
         interaction.channel.send({
             username: `${config.server_name} Donation`,
             embeds: [
@@ -234,7 +219,16 @@ const hex_brain = {
                     "description": `**Discord:** <@${userId}>\n**หากเลือกสินค้าและจำนวนเรียบร้อยแล้วกดปุ่มด้านล่าง**`,
                 }
             ],
-            components: [w8transAndConfirm]
+            components: [
+                new MessageActionRow()
+                .addComponents(
+                    new MessageButton()
+                        .setCustomId(`sendBill-${userId}`)
+                        .setEmoji(config.server_emoji)
+                        .setLabel('ยืนยันการเลือกสินค้า')
+                        .setStyle('SUCCESS')
+                )
+            ]
         })
 
     },
@@ -255,6 +249,49 @@ const hex_brain = {
             }
             this.packsSelectList.push(data)
         }
+
+        this.packSelectMenu = new MessageActionRow()
+        .addComponents(
+            new MessageSelectMenu()
+                .setCustomId(`packs-select`)
+                .setPlaceholder(`เลือกซื้อ`)
+                .addOptions(this.packsSelectList)
+                .setMinValues(1)
+                .setMaxValues(this.packsSelectList.length)
+        )
+
+        this.msgSelectMenu = { 
+            embeds: [],
+            components: [this.packSelectMenu]
+        }
+
+        for(let i = 0; i < config.package.length; i++){
+            const pack = config.package[i]
+            this.msgSelectMenu.embeds.push({
+                "fields": [
+                    {
+                        name: `${pack.label} @ ${pack.price} บาท`,
+                        value: `\`\`\`${pack.description}\`\`\``
+                    }
+                ],
+                "image": {
+                    "url": pack.imageUrl
+                }
+            })
+        }
+
+        this.msgSelectMenu.embeds.push({
+            "color": '98e363',
+            "fields": [
+                {
+                    name: `เลือกซื้อสินค้าใน ${config.server_name}`,
+                    value: `หลังจากซื้อสินค้าจะได้รับ Serial Code นำไปกรอกในประเทศได้`
+                }
+            ],
+            "footer": {
+                "text": "@ Develop by Hex and Document by Dio"
+            }
+        })
     },
     isFocusCategory : function(cateId){
         return cateId == config.categoryIdFocus
@@ -270,53 +307,7 @@ const hex_brain = {
         })
     },
     sendPackInteraction : function(channel){
-
-        for(let i = 0; i < config.package.length; i++){
-            const pack = config.package[i]
-            channel.send({
-                embeds: [
-                    {
-                        "fields": [
-                            {
-                                name: `${pack.label} @ ${pack.price} บาท`,
-                                value: `\`\`\`${pack.description}\`\`\``
-                            }
-                        ],
-                        "image": {
-                            "url": pack.imageUrl
-                        }
-                    }
-                ],
-                components: []
-            })
-        }
-
-        const packSelectMenu = new MessageActionRow()
-        .addComponents(
-            new MessageSelectMenu()
-                .setCustomId(`packs-select`)
-                .setPlaceholder(`เลือกซื้อ`)
-                .addOptions(this.packsSelectList)
-                .setMinValues(1)
-                .setMaxValues(this.packsSelectList.length)
-        )
-        channel.send({ 
-            embeds: [
-                {
-                    "color": '98e363',
-                    "fields": [
-                        {
-                            name: `เลือกซื้อสินค้าใน ${config.server_name}`,
-                            value: `หลังจากซื้อสินค้าจะได้รับ Serial Code นำไปกรอกในประเทศได้`
-                        }
-                    ],
-                    "footer": {
-                        "text": "@ Develop by Hex and Document by Dio"
-                    }
-                }
-            ],
-            components: [packSelectMenu]
-        }).then(()=>{
+        channel.send(this.msgSelectMenu).then(()=>{
             this.dbg(`${channel.id}:${channel.name} Staring buy product ...`)
         }).catch(console.log)
     },
@@ -357,7 +348,7 @@ const hex_brain = {
     },
     refreshInteractionManage : function(interaction, packUpdated, dataIncrease, cb){
         if(packUpdated){
-            const pack = config.package[dataIncrease[1]]
+            const pack = config.package[packUpdated.configIndex]
             interaction.message.edit({
                 embeds: [
                     {
@@ -409,40 +400,41 @@ const hex_brain = {
 
     },
     updateBillInfo : function(userId, dataUpadate, interaction){
+
         var totalPrice = 0
-
-        const w8transAndConfirm = new MessageActionRow()
-            .addComponents(
-                new MessageButton()
-                    .setCustomId(`sendBill-${userId}`)
-                    .setEmoji(config.server_emoji)
-                    .setLabel('ยืนยันการเลือกสินค้า')
-                    .setStyle('SUCCESS')
-        )
-
-
+        console.log(dataUpadate)
         dataUpadate.selectedItems.forEach(data=>{
-            const pack = config.package[data.index]
+            const pack = config.package[data.configIndex]
             totalPrice += (pack.price * data.total)
         })
 
+        const newUpdate = {
+            username: `${config.server_name} Donation`,
+            embeds: [
+                {
+                    "title": `**ราคารวมทั้งสิ้น: ${totalPrice} บาท**`,
+                    "color": 7470522,
+                    "description": `**Discord:** <@${userId}>\n**หากเลือกสินค้าและจำนวนเรียบร้อยแล้วกดปุ่มด้านล่าง**`,
+                }
+            ],
+            components: [
+                new MessageActionRow()
+                    .addComponents(
+                        new MessageButton()
+                            .setCustomId(`sendBill-${userId}`)
+                            .setEmoji(config.server_emoji)
+                            .setLabel('ยืนยันการเลือกสินค้า')
+                            .setStyle('SUCCESS')
+                )
+            ]
+        }
 
         interaction.channel.bulkDelete(1).then(()=>{
-
-            interaction.channel.send({
-                username: `${config.server_name} Donation`,
-                embeds: [
-                    {
-                        "title": `**ราคารวมทั้งสิ้น: ${totalPrice} บาท**`,
-                        "color": 7470522,
-                        "description": `**Discord:** <@${userId}>\n**หากเลือกสินค้าและจำนวนเรียบร้อยแล้วกดปุ่มด้านล่าง**`,
-                    }
-                ],
-                components: [w8transAndConfirm]
-            })
+            interaction.channel.send(newUpdate)
             interaction.deferUpdate()
 
         }).catch()
+
     },
     lastStepInteract : function(interaction, userId){
 
@@ -451,7 +443,7 @@ const hex_brain = {
         var total = 0
         var userBuyData = this.buyerList[userId]
         userBuyData.selectedItems.forEach(pack=>{
-            const prod = config.package[pack.index]
+            const prod = config.package[pack.configIndex]
             total += (prod.price*pack.total)
             infomationBuy.push({
                 image: {
@@ -553,7 +545,6 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
         }
         
         var userPackValues = interaction.values
-        
 
         interaction.channel.bulkDelete(config.package.length+1).then(()=>{
             hex_brain.initInformationBuy(userId, userPackValues, interaction)
@@ -586,13 +577,11 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
 
         var subIden = interaction.customId.substring(5, interaction.customId.length)
         
-        console.log(`\'${subIden}\'`)
 
         const userData = hex_brain.buyerList[subIden]
-        console.log(userData)
         
         var packBuyer = {
-            id: interaction.user.id,
+            id: subIden,
             serial_code: hex_brain.generateSerialCode(interaction.channel),
             packs: userData.selectedItems
         }
@@ -601,7 +590,7 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
 
         var packQueryData = []
         packBuyer.packs.forEach(pack => {
-            const prod = config.package[pack.index]
+            const prod = config.package[pack.configIndex]
             for(var i =0; i < pack.total; i++){
                 packQueryData.push({
                     label: prod.label,
@@ -654,7 +643,7 @@ hex_brain.bot.on('channelCreate', (channel) => {
     // Send select pack to user
     setTimeout(()=>{
         hex_brain.sendPackInteraction(channel)
-    }, 500)
+    }, 800)
 })
 
 

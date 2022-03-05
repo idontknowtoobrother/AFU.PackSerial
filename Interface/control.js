@@ -1,7 +1,17 @@
 // setbody hide
 const audio = new Audio('effect.mp3');
-let isOnActivatingPack = false
 audio.volume = 1
+
+const active_btn_audio = new Audio('active_btn.mp3')
+active_btn_audio.volume = 1
+
+const normal_click_audio = new Audio('normal_click.mp3')
+normal_click_audio.volume = 0.2
+
+const actived_click_audio = new Audio('actived.mp3')
+actived_click_audio.volume = 1
+
+let isOnActivatingPack = false
 
 document.body.style.display = 'none'
 document.getElementById('notify-text').style.display = 'none'
@@ -20,6 +30,7 @@ function addItem(itemName, itemCount, pathImg){
 }
 
 async function animateItems(packs, pathImg){
+    actived_click_audio.play()
     isOnActivatingPack = true
     var items = []
     for(let i = 0; i < packs.length; i++){
@@ -83,6 +94,9 @@ const closeWindow = (e)=> {
     }
 
     document.body.style.display = 'none'
+    document.getElementById('notify-text').style.display = 'none'
+    document.getElementById('notify-text').innerHTML = ''
+
     fetch(`https://AFU.PackSerial/CloseWindow`, {
         method: 'POST',
         headers: {
@@ -95,6 +109,7 @@ const closeWindow = (e)=> {
 
 
 const activeSerial = () => {
+    active_btn_audio.play()
     var serial = document.getElementById('serial-code').value
 
     if (!serial) {
@@ -114,6 +129,11 @@ const activeSerial = () => {
 }
 
 // event listener
+const input = document.querySelector('input');
+input.addEventListener('click', e =>{
+    normal_click_audio.play()
+})
+
 document.addEventListener('keydown', function(e) {
     closeWindow(e)
 })
@@ -125,10 +145,10 @@ window.addEventListener("message", (_e) => {
     if (data.action == 'openSerialWindow' && !isOnWindow) {
         isOnWindow = true
         document.getElementById('serial-code').value = ''
+        document.getElementById('notify-text').innerHTML = ''
         document.getElementById('capital-label').innerHTML = data.serverName
         document.getElementById('capital-img').src = data.logoName
         document.body.style.display = 'block';
-        document.getElementById('notify-text').style.display = 'block'
         document.getElementsByClassName('window')[0].style.display = 'block'
     } else if (data.action == 'activePack') {
         animateItems(data.packData, data.pathImg)

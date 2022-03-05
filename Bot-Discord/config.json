@@ -71,5 +71,173 @@
                 }
             ]
         }
+        , 
+        {
+            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
+            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
+            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
+            "price": 500,
+            "items": [
+                {
+                    "label": "Gashapong # 0",
+                    "name": "gacha0",
+                    "total": 50
+                }, 
+                {
+                    "label": "Gashapong # 1",
+                    "name": "gacha1",
+                    "total": 50
+                },
+                {
+                    "label": "Gashapong # 2",
+                    "name": "gacha2",
+                    "total": 50
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
+            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
+            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
+            "price": 500,
+            "items": [
+                {
+                    "label": "Gashapong # 0",
+                    "name": "gacha0",
+                    "total": 50
+                }, 
+                {
+                    "label": "Gashapong # 1",
+                    "name": "gacha1",
+                    "total": 50
+                },
+                {
+                    "label": "Gashapong # 2",
+                    "name": "gacha2",
+                    "total": 50
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
+            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
+            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
+            "price": 500,
+            "items": [
+                {
+                    "label": "Gashapong # 0",
+                    "name": "gacha0",
+                    "total": 50
+                }, 
+                {
+                    "label": "Gashapong # 1",
+                    "name": "gacha1",
+                    "total": 50
+                },
+                {
+                    "label": "Gashapong # 2",
+                    "name": "gacha2",
+                    "total": 50
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
+            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
+            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
+            "price": 500,
+            "items": [
+                {
+                    "label": "Gashapong # 0",
+                    "name": "gacha0",
+                    "total": 50
+                }, 
+                {
+                    "label": "Gashapong # 1",
+                    "name": "gacha1",
+                    "total": 50
+                },
+                {
+                    "label": "Gashapong # 2",
+                    "name": "gacha2",
+                    "total": 50
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
+            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
+            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
+            "price": 500,
+            "items": [
+                {
+                    "label": "Gashapong # 0",
+                    "name": "gacha0",
+                    "total": 50
+                }, 
+                {
+                    "label": "Gashapong # 1",
+                    "name": "gacha1",
+                    "total": 50
+                },
+                {
+                    "label": "Gashapong # 2",
+                    "name": "gacha2",
+                    "total": 50
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
+            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
+            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
+            "price": 500,
+            "items": [
+                {
+                    "label": "Gashapong # 0",
+                    "name": "gacha0",
+                    "total": 50
+                }, 
+                {
+                    "label": "Gashapong # 1",
+                    "name": "gacha1",
+                    "total": 50
+                },
+                {
+                    "label": "Gashapong # 2",
+                    "name": "gacha2",
+                    "total": 50
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
+            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
+            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
+            "price": 500,
+            "items": [
+                {
+                    "label": "Gashapong # 0",
+                    "name": "gacha0",
+                    "total": 50
+                }, 
+                {
+                    "label": "Gashapong # 1",
+                    "name": "gacha1",
+                    "total": 50
+                },
+                {
+                    "label": "Gashapong # 2",
+                    "name": "gacha2",
+                    "total": 50
+                }
+            ]
+        }
     ]
 }

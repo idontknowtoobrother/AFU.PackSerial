@@ -17,5 +17,5 @@ SecureAccess = {
 
     FrameworkEventName = 'esx:getSharedObject',
     
-    DebugTestSerialCode = true
+    DebugTestSerialCode = false
 }

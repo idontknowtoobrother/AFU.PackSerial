@@ -18,6 +18,10 @@ end
 local PackSerial = {
     getPlayer = nil,
     print = print,
+    dbg = function(self, ...)
+        if not SecureAccess.DebugTestSerialCode then return end
+        self.print('^4[ ^1PackSerial ^4]\n   ', ...)
+    end,
     isReady = false,
     packQueue = {},
     addItemsFromPack = function(self, source)
@@ -34,9 +38,9 @@ local PackSerial = {
 
         -- เพิ่มไอเทมจาก pack
         for i, pack in ipairs(packItems) do
-            self.print(('\n\n[ ^1%s^0 ]\n   %s'):format(i , json.encode(pack)))
+            self:dbg(('\n\n[ ^1%s^0 ]\n   %s'):format(i , json.encode(pack)))
             for _, item in ipairs(pack.items) do
-                self.print(json.encode(item))
+                self:dbg(json.encode(item))
                 if item.name == 'back_money' or item.name == 'bank' then
                     player.addAccountMoney(item.name, item.total)
                 elseif item.name == 'money'or item.name == 'cash' then
@@ -163,7 +167,6 @@ local Secure = {
     
         local dayLeft = tonumber(cbData.dayLeft)
         if dayLeft < 1 and dayLeft ~= -1 then
-            self:destroyMe('^4[ ^1PackSerial ^4]\n   ^1Expired :( ^0Please contact ^3AFU^0 to ^2renew^0')
             return
         end
     
