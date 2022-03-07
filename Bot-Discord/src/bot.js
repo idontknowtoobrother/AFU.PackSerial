@@ -353,11 +353,13 @@ const hex_brain = {
             ]
         }
 
-        interaction.channel.bulkDelete(1).then(()=>{
-            interaction.channel.send(newUpdate)
-            interaction.deferUpdate()
-
-        }).catch()
+        try{
+            interaction.channel.bulkDelete(1).then(()=>{
+                interaction.channel.send(newUpdate)
+                interaction.deferUpdate()
+    
+            }).catch()
+        }catch(e){}
 
     },
     lastStepInteract : function(interaction, userId){
@@ -434,11 +436,12 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
             interaction.deferUpdate()
             return
         }
-        interaction.channel.bulkDelete(buyerData.selectedItems.length+1).then(()=>{
-            hex_brain.lastStepInteract(interaction, subId)
-
-
-        }).catch()
+        try{
+            interaction.channel.bulkDelete(1, buyerData.selectedItems.length+1).then(()=>{
+                hex_brain.lastStepInteract(interaction, subId)
+            }).catch()
+        }catch(e){}
+       
     }
 
     // increase product
@@ -475,9 +478,13 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
         
         var userPackValues = interaction.values
 
-        interaction.channel.bulkDelete(config.package.length+1).then(()=>{
-            hex_brain.initInformationBuy(userId, userPackValues, interaction)
-        })
+        
+        try{
+            interaction.channel.bulkDelete(1, config.package.length+1).then(()=>{
+                hex_brain.initInformationBuy(userId, userPackValues, interaction)
+            })
+        }catch(e){}
+        
         return
     }
 
