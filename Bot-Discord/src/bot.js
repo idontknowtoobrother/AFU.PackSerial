@@ -244,10 +244,13 @@ const hex_brain = {
             this.dbg(`${channel.id}:${channel.name} Staring buy product ...`)
         }).catch(console.log)
     },
-    increaseProduct : function(data){
+    increaseProduct : function(data, interaction){
         // data = [ 'userId', 'indexP']
         var buyerData = this.buyerList[data[0]]
-        if( buyerData == undefined || buyerData == null)return false;
+        if( buyerData == undefined || buyerData == null){
+            this.errorBot(interaction)
+            return
+        }
         
         var returnPack = false
 
@@ -261,10 +264,13 @@ const hex_brain = {
 
         return returnPack
     },
-    decreaseProduct : function(data){
+    decreaseProduct : function(data, interaction){
         // data = [ 'userId', 'indexP']
         var buyerData = this.buyerList[data[0]]
-        if( buyerData == undefined || buyerData == null)return false;
+        if( buyerData == undefined || buyerData == null){
+            this.errorBot(interaction) 
+            return
+        };
         
         var returnPack = false
 
@@ -357,7 +363,6 @@ const hex_brain = {
             interaction.channel.bulkDelete(1).then(()=>{
                 interaction.channel.send(newUpdate)
                 interaction.deferUpdate()
-    
             }).catch()
         }catch(e){}
 
@@ -419,6 +424,23 @@ const hex_brain = {
                 }
             }
         }catch(e){ console.log('\nBot Refresh!') }
+    },
+    errorBot : function(interaction){
+        
+        try{
+            interaction.channel.messages.fetch().then(messages=>{
+                interaction.channel.bulkDelete(messages.size).then(()=>{
+                    interaction.channel.send(`**\`บอทถูก restart กรุณาลองใหม่หลังจากห้องปิดใน 3 วินาที\`**`)
+                    setTimeout(()=>{
+                        try{
+                            interaction.channel.delete()
+                        }catch(e){}
+                    },3000)
+                })
+            })
+            
+        }catch(e){ console.log('\nBot Refresh!') }
+       
     }
 
 }
@@ -433,7 +455,7 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
         var subId = interaction.customId.substring(9, interaction.customId.length)
         const buyerData = hex_brain.buyerList[subId]
         if(!buyerData || interaction.user.id != subId){
-            interaction.deferUpdate()
+            hex_brain.errorBot(interaction) 
             return
         }
         try{
@@ -449,7 +471,7 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
         var subId = interaction.customId.substring(9, interaction.customId.length)
         var dataIncrease =  subId.split('-')// userId i 
         dataIncrease[1] = parseInt(dataIncrease[1]) 
-        const packUpdated = hex_brain.increaseProduct(dataIncrease)
+        const packUpdated = hex_brain.increaseProduct(dataIncrease, interaction)
         hex_brain.refreshInteractionManage(interaction, packUpdated, dataIncrease, hex_brain.updateBillInfo)
     }
 
@@ -458,7 +480,7 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
         var subId = interaction.customId.substring(9, interaction.customId.length)
         var dataIncrease =  subId.split('-')// userId i 
         dataIncrease[1] = parseInt(dataIncrease[1]) 
-        const packUpdated = hex_brain.decreaseProduct(dataIncrease)
+        const packUpdated = hex_brain.decreaseProduct(dataIncrease, interaction)
         hex_brain.refreshInteractionManage(interaction, packUpdated, dataIncrease, hex_brain.updateBillInfo)
     }
 
@@ -484,7 +506,7 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
                 hex_brain.initInformationBuy(userId, userPackValues, interaction)
             })
         }catch(e){}
-        
+
         return
     }
 
@@ -519,7 +541,10 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
         
 
         const userData = hex_brain.buyerList[subIden]
-        
+        if (userData == undefined){
+            hex_brain.errorBot(interaction)
+            return
+        }
         var packBuyer = {
             id: subIden,
             serial_code: hex_brain.generateSerialCode(interaction.channel),
@@ -568,7 +593,7 @@ hex_brain.bot.on('channelDelete', (channel)=>{
         return
     }
     hex_brain.deleteChannelBuyerList(channel)
-    console.log(`[ Refresh Data ]\n   ${hex_brain.buyerList}`)
+    console.log(`[ Refresh Data ]\n   ${JSON.stringify(hex_brain.buyerList)}`)
 })
 
 hex_brain.bot.on('channelCreate', (channel) => {
