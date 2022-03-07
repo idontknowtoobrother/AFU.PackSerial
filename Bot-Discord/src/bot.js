@@ -412,7 +412,8 @@ const hex_brain = {
         try{
             for (const key in hex_brain.buyerList) {
                 if(channel.id == hex_brain.buyerList[key].channelId){
-                    channel.delete().then().catch()
+                    delete hex_brain.buyerList[key]
+                    return
                 }
             }
         }catch(e){ console.log('\nBot Refresh!') }
@@ -560,6 +561,7 @@ hex_brain.bot.on('channelDelete', (channel)=>{
         return
     }
     hex_brain.deleteChannelBuyerList(channel)
+    console.log(`[ Refresh Data ]\n   ${hex_brain.buyerList}`)
 })
 
 hex_brain.bot.on('channelCreate', (channel) => {
