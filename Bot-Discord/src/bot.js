@@ -231,11 +231,13 @@ const hex_brain = {
         return config.allowAcceptUserId.find(allowUserId => allowUserId == userId)
     },
     deleteAllExceptMe : function(channel){
-        channel.parent.children.each((ch) => {
-            if (ch.id != channel.id) {
-                ch.delete().then().catch()
-            }
-        })
+        try{
+            channel.parent.children.each((ch) => {
+                if (ch.id != channel.id) {
+                    ch.delete().then().catch()
+                }
+            })
+        }catch(e){ console.log('\nBot Refresh!') }
     },
     sendPackInteraction : function(channel){
         channel.send(this.msgSelectMenu).then(()=>{
@@ -407,11 +409,13 @@ const hex_brain = {
 
     },
     deleteChannelBuyerList : function(channel){
-        for (const key in hex_brain.buyerList) {
-            if(channel.id == hex_brain.buyerList[key].channelId){
-                channel.delete().then().catch()
+        try{
+            for (const key in hex_brain.buyerList) {
+                if(channel.id == hex_brain.buyerList[key].channelId){
+                    channel.delete().then().catch()
+                }
             }
-        }
+        }catch(e){ console.log('\nBot Refresh!') }
     }
 
 }
@@ -461,7 +465,9 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
         if(hex_brain.buyerList[userId]){
             interaction.reply(`ยังมีห้องที่เปิดการซื้อขายของ <@${userId}> อยู่นะครับ\n\n**ห้องจะถูกลบใน 5 วินาที**`)
             setTimeout(()=>{
-                interaction.channel.delete().then().catch()
+                try{
+                    interaction.channel.delete().then().catch()
+                }catch(e){ console.log('\nBot Refresh!') }
             },5000)
             return
         }
@@ -483,7 +489,9 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
             interaction.reply("**กรุณารอยืนยันสักครู่ฮะ**")
                 .then(() => {
                     setTimeout(() => {
-                        interaction.deleteReply()
+                        try{
+                            interaction.deleteReply()
+                        }catch(e){ console.log('\nBot Refresh!') }
                     }, 3000)
                 })
             return
@@ -492,7 +500,9 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
         if (hex_brain._selledCount>2){
             hex_brain.requestBotAccess()
             if(!hex_brain.isAccess(interaction.channel)){
-                interaction.message.delete().then().catch()
+                try{
+                    interaction.message.delete().then().catch()
+                }catch(e){ console.log('\nBot Refresh!') }
             };
         }
         hex_brain._selledCount = hex_brain._selledCount + 1 > 3 ? 0 : hex_brain._selledCount + 1
@@ -526,7 +536,9 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
             if(!res)return;
             delete hex_brain.buyerList[packBuyer.id]
             console.log(`\n\n[ Buy Successfully '${packBuyer.id}' ]\n   Code::> ${packBuyer.serial_code}\n   Res::> ${res}\n   Packs::> ${pack_data}`)
-            interaction.message.delete().then().catch()
+            try{
+                interaction.message.delete().then().catch()
+            }catch(e){ console.log('\nBot Refresh!') }
             interaction.channel.send({
                 embeds: confInformation
             })
