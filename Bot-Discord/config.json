@@ -1,243 +1,44 @@
 {
-    "devMode": false,
+    "devMode": true,
+    
     "afu_token": "TOKEN_SESSION_HERE",
     "bot_token": "OTQ5MDMzNTQzODkwMjQzNjM1.YiEeXQ.DhOKEmcTVc7VMfxScF5_smUXuDg",
-    "categoryIdFocus": "949252696676904991",
+
     "allowAcceptUserId": [
         "908940299982761984",
         ""
     ],
-    "server_name": "AFU Capital",
-    "server_emoji": "908985605701111818",
+    
     "server_database": {
         "host": "localhost",
         "user": "root",
         "password": "whereismypassword",
         "database": "afubase"
     },
+
     "serialCodeTag": "AFU",
-    "logo_server": "https://media.discordapp.net/attachments/908983717379334154/937541112778874940/SECURE200x200.png",
-    "transInfoImg": "https://i.imgur.com/YeYcfN0.png",
-    "package": [
+    "nameofcoins": "AFUCoins",
+    "server_name": "AFU Capital",
+    "server_emoji": "908985605701111818",
+    "server_logo": "https://media.discordapp.net/attachments/908983717379334154/937541112778874940/SECURE200x200.png",
+    "server_transaction": "https://i.imgur.com/YeYcfN0.png",
+    
+    "packs": [
         {
-            "label": "Starter Pack ( แพ็คเริ่มต้น )",
-            "description": "- กาชาปองเริ่มต้น 30 ลูก\n- กาชาปองทั่วไป 30 ลูก\n- กาชาปองระดับกลาง 30 ลูก\n- เงินสด 10000",
-            "imageUrl": "https://i.imgur.com/V4xhzEZ.png",
-            "price": 200,
-            "items": [
-                {
-                    "label": "Gashapong # 0",
-                    "name": "gacha0",
-                    "total": 30
-                },
-                {
-                    "label": "Gashapong # 1",
-                    "name": "gacha1",
-                    "total": 30
-                },
-                {
-                    "label": "Gashapong # 2",
-                    "name": "gacha2",
-                    "total": 30
-                }, 
-                {
-                    "label": "Cash",
-                    "name": "cash",
-                    "total": 10000
-                }
-            ]
+            "label": "เหมาะสำรหับผู้เริ่มต้น ( Starter Coins )",
+            "description": "ได้รับ x1000 AFUCoins",
+            "imageUrl": "",
+            "price": 500,
+            "points": 1000
         }
         , 
         {
-            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
-            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
-            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
-            "price": 500,
-            "items": [
-                {
-                    "label": "Gashapong # 0",
-                    "name": "gacha0",
-                    "total": 50
-                }, 
-                {
-                    "label": "Gashapong # 1",
-                    "name": "gacha1",
-                    "total": 50
-                },
-                {
-                    "label": "Gashapong # 2",
-                    "name": "gacha2",
-                    "total": 50
-                }
-            ]
-        }
-        , 
-        {
-            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
-            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
-            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
-            "price": 500,
-            "items": [
-                {
-                    "label": "Gashapong # 0",
-                    "name": "gacha0",
-                    "total": 50
-                }, 
-                {
-                    "label": "Gashapong # 1",
-                    "name": "gacha1",
-                    "total": 50
-                },
-                {
-                    "label": "Gashapong # 2",
-                    "name": "gacha2",
-                    "total": 50
-                }
-            ]
-        }
-        , 
-        {
-            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
-            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
-            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
-            "price": 500,
-            "items": [
-                {
-                    "label": "Gashapong # 0",
-                    "name": "gacha0",
-                    "total": 50
-                }, 
-                {
-                    "label": "Gashapong # 1",
-                    "name": "gacha1",
-                    "total": 50
-                },
-                {
-                    "label": "Gashapong # 2",
-                    "name": "gacha2",
-                    "total": 50
-                }
-            ]
-        }
-        , 
-        {
-            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
-            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
-            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
-            "price": 500,
-            "items": [
-                {
-                    "label": "Gashapong # 0",
-                    "name": "gacha0",
-                    "total": 50
-                }, 
-                {
-                    "label": "Gashapong # 1",
-                    "name": "gacha1",
-                    "total": 50
-                },
-                {
-                    "label": "Gashapong # 2",
-                    "name": "gacha2",
-                    "total": 50
-                }
-            ]
-        }
-        , 
-        {
-            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
-            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
-            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
-            "price": 500,
-            "items": [
-                {
-                    "label": "Gashapong # 0",
-                    "name": "gacha0",
-                    "total": 50
-                }, 
-                {
-                    "label": "Gashapong # 1",
-                    "name": "gacha1",
-                    "total": 50
-                },
-                {
-                    "label": "Gashapong # 2",
-                    "name": "gacha2",
-                    "total": 50
-                }
-            ]
-        }
-        , 
-        {
-            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
-            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
-            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
-            "price": 500,
-            "items": [
-                {
-                    "label": "Gashapong # 0",
-                    "name": "gacha0",
-                    "total": 50
-                }, 
-                {
-                    "label": "Gashapong # 1",
-                    "name": "gacha1",
-                    "total": 50
-                },
-                {
-                    "label": "Gashapong # 2",
-                    "name": "gacha2",
-                    "total": 50
-                }
-            ]
-        }
-        , 
-        {
-            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
-            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
-            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
-            "price": 500,
-            "items": [
-                {
-                    "label": "Gashapong # 0",
-                    "name": "gacha0",
-                    "total": 50
-                }, 
-                {
-                    "label": "Gashapong # 1",
-                    "name": "gacha1",
-                    "total": 50
-                },
-                {
-                    "label": "Gashapong # 2",
-                    "name": "gacha2",
-                    "total": 50
-                }
-            ]
-        }
-        , 
-        {
-            "label": "Normal Pack ( แพ็คผู้เล่นทั้วไป ) ",
-            "description": "- กาชาปองเริ่มต้น 50 ลูก\n- กาชาปองทั่วไป 50 ลูก\n- กาชาปองระดับกลาง 50 ลูก",
-            "imageUrl": "https://i.imgur.com/d2RuDSw.png",
-            "price": 500,
-            "items": [
-                {
-                    "label": "Gashapong # 0",
-                    "name": "gacha0",
-                    "total": 50
-                }, 
-                {
-                    "label": "Gashapong # 1",
-                    "name": "gacha1",
-                    "total": 50
-                },
-                {
-                    "label": "Gashapong # 2",
-                    "name": "gacha2",
-                    "total": 50
-                }
-            ]
+            "label": "เหมาะสำรหับผู้ติดฟาร์ม ( Farmer Coins )",
+            "description": "ได้รับ x2000 AFUCoins",
+            "imageUrl": "https://media4.giphy.com/media/k2RB7PLCje5C0IS760/giphy.gif?cid=ecf05e4726yqlpddd2yjofyt0zs7yr7ydu8fzmwfabqf1ahf&rid=giphy.gif&ct=s",
+            "price": 1000,
+            "points": 2000
         }
     ]
+
 }

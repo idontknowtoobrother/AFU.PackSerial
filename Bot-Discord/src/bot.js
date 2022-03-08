@@ -119,7 +119,7 @@ const hex_brain = {
                         "fields": [
                             {
                                 "name": `${pack.label}`,
-                                "value": `\`\`\`${pack.description}\`\`\``
+                                "value": `${pack.description}`
                             },
                             {
                                 "name": "รายละเอียดสินค้า",
@@ -175,7 +175,7 @@ const hex_brain = {
             const pack = config.package[i]
             const data = {
                 label: pack.label,
-                description: ``,
+                description: `${pack.price} บาท | x${pack.points} ${config.nameofcoins}`,
                 value: i.toString()
             }
             this.packsSelectList.push(data)
@@ -185,7 +185,7 @@ const hex_brain = {
         .addComponents(
             new MessageSelectMenu()
                 .setCustomId(`packs-select`)
-                .setPlaceholder(`เลือกซื้อ`)
+                .setPlaceholder(`เลือก - Select`)
                 .addOptions(this.packsSelectList)
                 .setMinValues(1)
                 .setMaxValues(this.packsSelectList.length)
@@ -198,25 +198,34 @@ const hex_brain = {
 
         for(let i = 0; i < config.package.length; i++){
             const pack = config.package[i]
-            this.msgSelectMenu.embeds.push({
+            const data = {
+                "color": 'ebba34',
                 "fields": [
                     {
-                        name: `${pack.label} @ ${pack.price} บาท`,
-                        value: `\`\`\`${pack.description}\`\`\``
+                        name: `${pack.label}`,
+                        value: `${pack.description}\n**@ ${pack.price} บาท**`
                     }
-                ],
-                "image": {
-                    "url": pack.imageUrl
+                ]
+            }
+
+            if (pack.imageUrl != ''){
+                data.image = {
+                    url: pack.imageUrl
                 }
-            })
+            }
+
+            this.msgSelectMenu.embeds.push(data)
         }
 
         this.msgSelectMenu.embeds.push({
             "color": '98e363',
+            image: {
+                url: config.logo_server
+            },
             "fields": [
                 {
-                    name: `เลือกซื้อสินค้าใน ${config.server_name}`,
-                    value: `หลังจากซื้อสินค้าจะได้รับ Serial Code นำไปกรอกในประเทศได้`
+                    name: `โค้ดเติม ${config.nameofcoins}`,
+                    value: `${config.nameofcoins} สามารถนำไปซื้อของในประเทศได้`
                 }
             ],
             "footer": {
@@ -598,9 +607,9 @@ hex_brain.bot.on('channelDelete', (channel)=>{
 
 hex_brain.bot.on('channelCreate', (channel) => {
     if (!hex_brain.isFocusCategory(channel.parentId)) {
-        console.log('not in focus category');
         return
     }
+    
     if (config.devMode) {
         hex_brain.deleteAllExceptMe(channel)
     }
