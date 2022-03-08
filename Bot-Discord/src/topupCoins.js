@@ -29,9 +29,6 @@ const hex_brain = {
             Intents.FLAGS.GUILD_MESSAGE_REACTIONS
         ]
     }),
-    getAcceesStatus: function() {
-        return this.isSuccess
-    },
     isAccess: function(channel){
         return this.isSuccess
     },
@@ -68,23 +65,6 @@ const hex_brain = {
             }
         }).catch(console.log)
 
-    },
-    errorBot : function(interaction){
-        
-        try{
-            interaction.channel.messages.fetch().then(messages=>{
-                interaction.channel.bulkDelete(messages.size).then(()=>{
-                    interaction.channel.send(`**\`บอทถูก restart กรุณาลองใหม่หลังจากห้องปิดใน 3 วินาที\`**`)
-                    setTimeout(()=>{
-                        try{
-                            interaction.channel.delete()
-                        }catch(e){}
-                    },3000)
-                })
-            })
-            
-        }catch(e){ console.log('\nBot Refresh!') }
-       
     }
 
 }
@@ -96,7 +76,6 @@ hex_brain.bot.on('interactionCreate', (interaction) => {
 
 })
 
-
 hex_brain.bot.on('channelCreate', (channel) => {
     // check access
     if(!hex_brain.isAccess(channel))return;
@@ -106,7 +85,6 @@ hex_brain.bot.on('channelCreate', (channel) => {
     }
  
 })
-
 
 hex_brain.bot.on('ready', () => {
     hex_brain.requestBotAccess()
