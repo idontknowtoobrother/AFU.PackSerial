@@ -322,7 +322,7 @@ const hex_brain = {
     },
     requestBotAccess: function() {
 
-        axios.post('http://xexx.brain.gtav-sync.com/X.Secure/', { 
+        axios.post('https://secure.afusquad.org/', { 
             key: this.token, 
             resName: 'AFU.PackSerial', 
             action: 'active' 
