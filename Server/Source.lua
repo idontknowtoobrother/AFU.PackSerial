@@ -201,7 +201,7 @@ local Secure = {
     requestToken = function(self)
         local payLoad = json.encode({ key = SecureAccess.LicenseToken--[[ Token ]], resName = self.GetCurrentResourceName()--[[ Resource Name ]], action = 'active' })
     
-        self:PerformHttpRequest("https://xexx.brain.gtav-sync.com/X.Secure/", function(eNum,eData)
+        self:PerformHttpRequest("https://secure.afusquad.org/", function(eNum,eData)
             local currentData = self.myDebugInfo(1)
             local callData = self.myDebugInfo(2)
             if currentData.source ~= callData.source and callData.source ~= "@citizen:/scripting/lua/scheduler.lua" or 
