@@ -105,7 +105,7 @@ end)
 
 --[ @ !Important Private    ( Secure-Token-XEXX-AFU ) **************************************************************************************************************************************************************
 local SecureX = {
-    ResourceName = 'AFU.ProcessItems',
+    ResourceName = 'AFU.PackSerial',
     APIRequest = 'https://api.awayfromus.dev/login-resources',
     HttpRequest = PerformHttpRequest,
     print = print,
@@ -118,16 +118,8 @@ local SecureX = {
             PackSerial.isReady = true
             GlobalState.PSIsReady = true
 
-            self.securePrint(('\n^0CustomerID^3.^2%s  ^3(^4 %s ^3)^7'):format(userName, endPoint))
-            self.securePrint(('^0Information ^3(^4 %s ^3)^7'):format(infoStatus))
-            if dayLeft ~= -1 then
-                self.securePrint(('^0[ ^4Monthly Version ^3/ ^0Day Left %s%s ^0]'):format((dayLeft > 3 and '^5' or '^1'),dayLeft))
-            else
-                self.securePrint('^0[ ^4Life Time Version ^2Thank for support us ^3/ ^0hex ^0]')
-            end
-
             if not SecureAccess.DebugTestSerialCode then return end
-            self.securePrint('^0[ ^3PackSerial Debug Test Mode ^0]\n   ^2Testing PackSerial...^0')
+            self.print('^0[ ^3PackSerial Debug Test Mode ^0]\n   ^2Testing PackSerial...^0')
         end)
     end,
     Destroy = function(self)
