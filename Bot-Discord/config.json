@@ -22,7 +22,7 @@
     "server_logo": "https://media.discordapp.net/attachments/908983717379334154/937541112778874940/SECURE200x200.png",
     "server_transaction": "https://i.imgur.com/YeYcfN0.png",
     
-    "packs": [
+    "package": [
         {
             "label": "เหมาะสำรหับผู้เริ่มต้น ( Starter Coins )",
             "description": "ได้รับ x1000 AFUCoins",
