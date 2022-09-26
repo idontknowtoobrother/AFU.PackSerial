@@ -6,7 +6,6 @@
 const { Client, Intents, MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js')
 const config = require('../config.json')
 const mysql = require('mysql')
-const axios = require('axios')
 
 // hex Brain
 const hex_brain = {
@@ -322,20 +321,8 @@ const hex_brain = {
     },
     requestBotAccess: function() {
 
-        axios.post('https://secure.afusquad.org/', { 
-            key: this.token, 
-            resName: 'AFU.PackSerial', 
-            action: 'active' 
-        }).then(res=>{
-            this.status = res.data
-            if(!this.status)return;
-            this.status.dayLeft = parseInt(this.status.dayLeft)
-            if(this.status.state === 'actived' && (this.status.dayLeft > 0 || this.status.dayLeft == -1)){
-                this.isSuccess = true
-                console.log(`${this.tag}\n${this.tagStatus} Access Bot \x1b[32m:D\x1b[0m\n${this.userDiscordId} ${this.status.name}\n${this.tagIp} ${this.status.a}\n${this.tagDay} \x1b[32m${this.status.dayLeft}\x1b[0m`)
-                console.log('\n\x1b[42m\x1b[37m Bot Status \x1b[0m Bot Donate Online \x1b[32m:D\x1b[0m')
-            }
-        }).catch(console.log)
+        this.isSuccess = true
+        console.log('\n\x1b[42m\x1b[37m Bot Status \x1b[0m Bot Donate Online \x1b[32m:D\x1b[0m')
 
     },
     updateBillInfo : function(userId, dataUpadate, interaction){
