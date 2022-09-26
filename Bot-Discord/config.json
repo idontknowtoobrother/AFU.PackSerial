@@ -1,7 +1,6 @@
 {
     "devMode": true,
     
-    "afu_token": "TOKEN_SESSION_HERE",
     "bot_token": "OTQ5MDMzNTQzODkwMjQzNjM1.YiEeXQ.DhOKEmcTVc7VMfxScF5_smUXuDg",
 
     "allowAcceptUserId": [

@@ -8,8 +8,6 @@
 
 SecureAccess = {
 
-    LicenseToken = 'TOKEN_SESSION_HERE',
-
     DiscordAPI = {
         ResourceStatus = 'ลิงค์WebhookของDiscord' ,
         UntrustedCall = 'ลิงค์WebhookของDiscord'  ,

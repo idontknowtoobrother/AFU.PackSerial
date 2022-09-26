@@ -103,32 +103,14 @@ createServerEvent('secure:addItemsFromPack', function()
 end)
 
 
-
 --[ @ !Important Private    ( Secure-Token-XEXX-AFU ) **************************************************************************************************************************************************************
-local Secure = {
-    callAPI = PerformHttpRequest,
-    securePrint = print,
-    Wait = Wait,
-    attmpReq = 0,
-    isBreakInstant = false,
-    GetCurrentResourceName = GetCurrentResourceName,
-    myDebugInfo = debug.getinfo,
-    print = function(self, ...)
-        return self.securePrint("^0[ ^3+^4Secure Buffer^0 ] ^7",... ,"^7")
-    end,
-    PerformHttpRequest = function(self, url, cb, method, data, headers, options)
-        self.callAPI(url, cb, method, data, headers, options) 
-    end,
-    destroyMe = function(self, info)
-        if info then
-            self:print("^1- Destroyme: ^0"..info)
-            PackSerial = nil
-        end
-        self = nil 
-    end,
-    connectedSecure = function(self, userName, endPoint, infoStatus, dayLeft)
-        if not self.loadStatus then return self:destroyMe('Can\'t connect Secure server...') end 
-    
+local SecureX = {
+    ResourceName = 'AFU.ProcessItems',
+    APIRequest = 'https://api.awayfromus.dev/login-resources',
+    HttpRequest = PerformHttpRequest,
+    print = print,
+    Init = function(self)
+        isPassedLicense = true
         --[ @ Start Code Here  
         -- @ Get framwork
         TriggerEvent(SecureAccess.FrameworkEventName, function(libs)
@@ -148,94 +130,65 @@ local Secure = {
             self.securePrint('^0[ ^3PackSerial Debug Test Mode ^0]\n   ^2Testing PackSerial...^0')
         end)
     end,
-    replyBuffer = function(self, infoStatus, dayLeft)
-        infoStatus = (self.loadStatus == false) and ('^1'..infoStatus) or ('^2'..infoStatus)
-        self:connectedSecure(self.userName, self.endPoint, infoStatus, dayLeft)
-    end,
-    loadSecureBridge = function(self, cbNum, cbData)
+    Destroy = function(self)
+        self.print('^1[ AFU-DETECTED ]^0 ^3SOMETHING SUSPECTED^0 ^1Resource Suicide.^0')
 
-        if not cbNum or not cbData or not cbData.dayLeft then
-
-            if self.attmpReq > 4 then
-                return self:destroyMe('Can\'t connect Secure server...')
-            end
-            self.attmpReq = self.attmpReq + 1
-            Wait(1000)
-            self:requestToken()
-            return 
-        end
-    
-        local dayLeft = tonumber(cbData.dayLeft)
-        if dayLeft < 1 and dayLeft ~= -1 then
-            return
-        end
-    
-        if self.isBreakInstant then return end
-    
-        self.loadStatus = false
-        local infoStatus
-        
-        if not cbData or not cbNum or ( cbNum > 499 and cbNum < 600 ) then
-            infoStatus = 'Token Server'
-        end
-    
-        if ( cbNum > 399 and cbNum < 500 ) then 
-            infoStatus = 'Your Network'
-        end
-    
-        if not ( cbNum > 199 and cbNum < 299 ) then 
-            infoStatus = 'Connection Timeout'
-        end
-    
-        self.endPoint = cbData.a or '404'
-        self.userName = cbData.name or '404'
-        self.devName = cbData.dev or '404'
-        self.resourceName = cbData.resname or '404'
-        self.loadStatus = ( cbData.state == 'actived' and self.GetCurrentResourceName() == self.resourceName ) and true or self.loadStatus
-    
-        infoStatus = ( self.loadStatus == true ) and 'Secured 200' or ( ( cbData.state == 'notfound' ) and 'Token 404' or ( ( cbData.state == 'activing' ) and 'Endpoint 404' or 'Unknow 404') )
-        infoStatus = ( self.resourceName ~= self.GetCurrentResourceName() ) and 'ResourceName 404' or infoStatus
-    
-        self:replyBuffer(infoStatus, dayLeft)
+        self = nil
     end,
-    requestToken = function(self)
-        local payLoad = json.encode({ key = SecureAccess.LicenseToken--[[ Token ]], resName = self.GetCurrentResourceName()--[[ Resource Name ]], action = 'active' })
-    
-        self:PerformHttpRequest("https://secure.afusquad.org/", function(eNum,eData)
-            local currentData = self.myDebugInfo(1)
-            local callData = self.myDebugInfo(2)
+    LoginResource = function(self)
+        local payLoad = { resource_name = self.ResourceName, license = GetConvar('afu_license', '') }
+        if payLoad.license == '' then
+            self.print("^2[ AFUSQUAD ]^0 License not set ^3set afu_license '...'^0")
+            return self:Destroy()
+        end
+        if self.ResourceName ~= GetCurrentResourceName() then
+            self.print("^2[ AFUSQUAD ]^0 ^1Don't change resource name :(^0")
+            return self:Destroy()
+        end
+
+        self.HttpRequest(self.APIRequest, function(rNum, rData)
+            local currentData = debug.getinfo(1)
+            local callData = debug.getinfo(2)
             if currentData.source ~= callData.source and callData.source ~= "@citizen:/scripting/lua/scheduler.lua" or 
             ( currentData.name ~= "userCalllback" and callData.name ~= "handler" ) then 
-    
-                -- @ [[ Try to cracking my args ... ]]
-    
-                return self:print("^1Kids try to ^0'Crack' ^3:D^7")
+                return self.print('^1[ AFU-DETECTED ]^0 SOMETHING SUSPECTED')
             end
-            self:loadSecureBridge(eNum, json.decode(eData))
-            
-        end, 'POST', payLoad ,{ ['Content-Type'] = 'application/json'})
-    
+
+            local respone = json.decode(rData)
+            if rNum == 200 then -- @ Pass
+                self.print(respone.msg)
+                local strDayLeft = ''
+                if respone.dayLeft == 0 then
+                    strDayLeft = '^2[ AFUSQUAD ]^0 Resource is ^1Expired you can renew at^0 ^4awayfromus.dev^0'
+                    return self:Destroy()
+                elseif respone.dayLeft == -1 then
+                    strDayLeft = '^2[ AFUSQUAD ]^0 Resource is ^2Life Time Plan :D^0'
+                else
+                    strDayLeft = ('^2[ AFUSQUAD ]^0 Resource is expire in ^3%s^0 Days'):format(respone.dayLeft)
+                end
+                self.print(strDayLeft)
+                self:Init()
+                return
+            end
+            if rNum == 400 then -- @ Sync by another Address
+                self.print("^2[ AFUSQUAD ]^0 Resource ^1Sync by another Address^0")
+            elseif rNum == 404 then -- @ Not found
+                self.print("^2[ AFUSQUAD ]^0 You don't have resource ^3".. self.ResourceName .."^0 but you can buy one at ^2https://awayfromus.dev/^0")
+            elseif rNum == 401 then
+                self.print("^2[ AFUSQUAD ]^0 License not found !")
+            end
+            return self:Destroy()
+        end, 'POST', json.encode(payLoad) ,{ ['Content-Type'] = 'application/json'})
     end
 }
+
 print = function(...)
-    if Secure.myDebugInfo(1).source ~= Secure.myDebugInfo(2).source or Secure.myDebugInfo(2).name ~= "callAPI" then 
-        Secure.isBreakInstant = true 
-        -- @ [[ Try to print my args ... ]]
-        return Secure:destroyMe("^1Kids try to ^0'print' ^3:D^7")
+    if debug.getinfo(1).source ~= debug.getinfo(2).source or debug.getinfo(2).name ~= "HttpRequest" then 
+        return SecureX:Destroy()
     end
-end
-debug.getinfo = function(...)
-    if Secure.myDebugInfo then
-        return Secure:destroyMe("^1Kids try to ^0'Crack' ^3:D^7")
-    end 
 end
 
-CreateThread(function()
-    while GetResourceState(GetCurrentResourceName()) ~= 'started' do
-        Wait(0)
-    end
-    MySQL.ready(function()
-        Secure:requestToken()
-    end)
+MySQL.ready(function()
+    SecureX:LoginResource()
 end)
 --[ @ !Important Private    ( Secure-Token-XEXX-AFU ) **************************************************************************************************************************************************************
