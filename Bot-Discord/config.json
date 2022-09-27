@@ -1,43 +1,176 @@
 {
-    "devMode": true,
+    "devMode": false,
+    "bot_token": "OTQ5NzE2MTEwNDMxODg3Mzgw.YiOaDQ.aOz8yc06FtgBPWaDpsGRHkwJ5Hc",
     
-    "bot_token": "OTQ5MDMzNTQzODkwMjQzNjM1.YiEeXQ.DhOKEmcTVc7VMfxScF5_smUXuDg",
-
+    "categoryIdFocus": "949899466478059581",
     "allowAcceptUserId": [
-        "908940299982761984",
-        ""
+        "366239280596779011",
+        "342272317948166144",
+        "404246000937730048",
+        "716620788689666099",
+        "841750389769502794"
     ],
-    
+    "server_name": "NowHere City",
+    "server_emoji": "853402920896954369",
     "server_database": {
         "host": "localhost",
         "user": "root",
-        "password": "whereismypassword",
-        "database": "afubase"
+        "password": "NoisyGz1924@",
+        "database": "nowhere_final"
     },
-
-    "serialCodeTag": "AFU",
-    "nameofcoins": "AFUCoins",
-    "server_name": "AFU Capital",
-    "server_emoji": "908985605701111818",
-    "server_logo": "https://media.discordapp.net/attachments/908983717379334154/937541112778874940/SECURE200x200.png",
-    "server_transaction": "https://i.imgur.com/YeYcfN0.png",
-    
+    "serialCodeTag": "NHC3",
+    "logo_server": "https://cdn.discordapp.com/attachments/911975458495680543/952932280287002624/NH_gif.gif",
+    "transInfoImg": "https://cdn.discordapp.com/attachments/911975458495680543/970678476166266920/payment.png",
     "package": [
         {
-            "label": "เหมาะสำรหับผู้เริ่มต้น ( Starter Coins )",
-            "description": "ได้รับ x1000 AFUCoins",
-            "imageUrl": "",
-            "price": 500,
-            "points": 1000
+            "label": "Gachapon 5 ลูก",
+            "description": "- กาชาปอง V.1 5 ลูก",
+            "imageUrl": "https://cdn.discordapp.com/attachments/972412725349199942/981260074813116436/50.png",
+            "price": 50,
+            "items": [
+                {
+                    "label": "NowHere Box V.2",
+                    "name": "gacha_05",
+                    "total": 5
+                }
+            ]
         }
         , 
         {
-            "label": "เหมาะสำรหับผู้ติดฟาร์ม ( Farmer Coins )",
-            "description": "ได้รับ x2000 AFUCoins",
-            "imageUrl": "https://media4.giphy.com/media/k2RB7PLCje5C0IS760/giphy.gif?cid=ecf05e4726yqlpddd2yjofyt0zs7yr7ydu8fzmwfabqf1ahf&rid=giphy.gif&ct=s",
+            "label": "Gachapon 10 ลูก",
+            "description": "- กาชาปอง V.1 10 ลูก",
+            "imageUrl": "https://cdn.discordapp.com/attachments/972412725349199942/981260075136073809/100.png",
+            "price": 100,
+            "items": [
+                {
+                    "label": "NowHere Box V.2",
+                    "name": "gacha_05",
+                    "total": 10
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Gachapon 20 ลูก ( โบนัส 2 ลูก ) ",
+            "description": "- กาชาปอง V.1 20 ลูก\n- Bonus Reward 2 ea",
+            "imageUrl": "https://cdn.discordapp.com/attachments/972412725349199942/981260075475804180/200.png",
+            "price": 200,
+            "items": [
+                {
+                    "label": "NowHere Box V.2",
+                    "name": "gacha_05",
+                    "total": 20
+                },
+                {
+                    "label": "Bonus Reward",
+                    "name": "gacha_05",
+                    "total": 2
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Gachapon 50 ลูก ( โบนัส 5 ลูก ) ",
+            "description": "- กาชาปอง V.1 50 ลูก\n- Bonus Reward 5 ea",
+            "imageUrl": "https://cdn.discordapp.com/attachments/972412725349199942/981260075761008670/500.png",
+            "price": 500,
+            "items": [
+                {
+                    "label": "NowHere Box V.2",
+                    "name": "gacha_05",
+                    "total": 50
+                },
+                {
+                    "label": "Bonus Reward",
+                    "name": "gacha_05",
+                    "total": 5
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Gachapon 100 ลูก ( โบนัส 10 ลูก ) ",
+            "description": "- กาชาปอง V.1 100 ลูก\n- Bonus Reward 10 ea",
+            "imageUrl": "https://cdn.discordapp.com/attachments/972412725349199942/981260076067217458/1000.png",
             "price": 1000,
-            "points": 2000
+            "items": [
+                {
+                    "label": "NowHere Box V.2",
+                    "name": "gacha_05",
+                    "total": 100
+                },
+                {
+                    "label": "Bonus Reward",
+                    "name": "gacha_05",
+                    "total": 10
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Gachapon 200 ลูก ( โบนัส 30 ลูก ) ",
+            "description": "- กาชาปอง V.1 200 ลูก\n- Bonus Reward 30 ea",
+            "imageUrl": "https://cdn.discordapp.com/attachments/972412725349199942/981260076381786152/2000.png",
+            "price": 2000,
+            "items": [
+                {
+                    "label": "NowHere Box V.2",
+                    "name": "gacha_05",
+                    "total": 200
+                },
+                {
+                    "label": "Bonus Reward",
+                    "name": "gacha_05",
+                    "total": 30
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Gachapon 500 ลูก ( โบนัส 70 ลูก ) ",
+            "description": "- กาชาปอง V.1 500 ลูก\n- Bonus Reward 70 ea",
+            "imageUrl": "https://cdn.discordapp.com/attachments/972412725349199942/981260076696350821/5000.png",
+            "price": 5000,
+            "items": [
+                {
+                    "label": "NowHere Box V.2",
+                    "name": "gacha_05",
+                    "total": 500
+                },
+                {
+                    "label": "Bonus Reward",
+                    "name": "gacha_05",
+                    "total": 70
+                }
+            ]
+        }
+        ,
+        {
+            "label": "บัตรทำงาน x2 7 วัน",
+            "description": "- บัตรทำงาน x2 7 วัน 1 ใบ",
+            "imageUrl": "https://cdn.discordapp.com/attachments/911975458495680543/985803832216915978/playerx2.png",
+            "price": 399,
+            "items": [
+                {
+                    "label": "กล่องบัตรเช่าทำงาน",
+                    "name": "boost_item",
+                    "total": 1
+                }
+            ]
+        }
+        , 
+        {
+            "label": "Rent Car Pack ( เช่ารถทำงาน 150KG ) ",
+            "description": "- Ford Raptor\n- สามารถนั่งได้ 6 ที่นั่ง\n- น้ำหนักบรรทุก 150KG\n- จำนวนวัน 14 วัน",
+            "imageUrl": "https://cdn.discordapp.com/attachments/911975458495680543/970683157374439424/carrent.png",
+            "price": 339,
+            "items": [
+                {
+                    "label": "Vehicles 150KG",
+                    "name": "rent100kg",
+                    "total": 1
+                }
+            ]
         }
     ]
-
 }
