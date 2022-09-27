@@ -146,6 +146,12 @@ local SecureX = {
                 return self.print('^1[ AFU-DETECTED ]^0 SOMETHING SUSPECTED')
             end
 
+            if rData == nil then
+                Wait(math.random(2000, 3000))
+                self.print(('^2[ AFU-RESPONE ]^0 Code: ^3%s^0 Action: ^3Trying connect license ...^0'):format(rNum))
+                return self:LoginResource()
+            end
+
             local respone = json.decode(rData)
             if rNum == 200 then -- @ Pass
                 self.print(respone.msg)
